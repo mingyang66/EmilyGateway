@@ -4,7 +4,7 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: Emily-Gateway
-          uri: http://localhost:9000/
-          predicates:
+        - id: EmilyFramework  # 自定义路由ID,保持唯一
+          uri: http://localhost:9000/  #目标服务地址
+          predicates: # 断言，路由条件，
             - Path=/api/test
