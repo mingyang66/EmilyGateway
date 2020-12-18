@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: Emily-Gateway
+  cloud:
+    gateway:
+      routes:
+        - id: Emily-Gateway
+          uri: http://localhost:9000/
+          predicates:
+            - Path=/api/test
