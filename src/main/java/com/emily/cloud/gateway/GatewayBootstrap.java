@@ -13,8 +13,4 @@ public class GatewayBootstrap {
         SpringApplication.run(GatewayBootstrap.class, args);
     }
 
-/*    @Bean
-    public RouteLocator routeLocator(RouteLocatorBuilder builder){
-        return builder.routes().route(p->p.path("/get").uri("https://wwww.baidu.com/")).build();
-    }*/
 }
