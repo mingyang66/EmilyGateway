@@ -3,6 +3,8 @@ spring:
     name: @project.name@
   profiles:
     active: dev
+
+
 ---
 spring:
   config:

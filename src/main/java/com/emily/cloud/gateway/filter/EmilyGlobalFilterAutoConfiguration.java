@@ -13,6 +13,9 @@ public class EmilyGlobalFilterAutoConfiguration {
 
     @Bean
     public EmilyGlobalFilter emilyGlobalFilter() {
-        return new EmilyGlobalFilter();
+        EmilyGlobalFilter emilyGlobalFilter = new EmilyGlobalFilter();
+        //设置优先级顺序在{@link org.springframework.cloud.gateway.filter.ReactiveLoadBalancerClientFilter}(10150)过滤器之后，方便获取到真实的请求地址
+        emilyGlobalFilter.setOrder(10151);
+        return emilyGlobalFilter;
     }
 }

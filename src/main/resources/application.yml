@@ -8,13 +8,51 @@ management:
     web:
       exposure:
         include: '*'
+  endpoint:
+    gateway:
+      # 开启网关端点，默认：true
+      enabled: true
 ---
 spring:
   cloud:
     gateway:
+      httpclient:
+        # 连接超时，单位毫秒
+        connect-timeout: 1000
+        # 响应超时时间，{@link java.time.Duration}类型
+        response-timeout: '10s'
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: false
       routes:
-        - id: EmilyFramework  # 自定义路由ID,保持唯一
-          uri: lb://EmilyFramework  #目标服务地址
-          order: 0 #顺序，当请求匹配到多个路由时，使用顺序小的
-          predicates: # 断言，路由条件，
+        # 自定义路由ID,保持唯一
+        - id: EmilyFramework
+          #目标服务地址
+          uri: lb://EmilyFramework
+          #顺序，当请求匹配到多个路由时，使用顺序小的
+          order: 0
+          # 断言，路由条件，
+          predicates:
             - Path=/api/**
+        # 自定义路由ID,保持唯一
+        - id: consul-demo
+          #目标服务地址
+          uri: lb://consul-demo
+          #顺序，当请求匹配到多个路由时，使用顺序小的
+          order: 0
+          # 断言，路由条件，
+          predicates:
+            - Path=/http/**
+          metadata:
+            # 连接超时时间，单位：毫秒
+            connect-timeout: 1000
+            # 响应超时时间，单位：毫秒
+            response-timeout: 2000
