@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: @project.name@
+  cloud:
+    bootstrap:
+      enabled: true
+    consul:
+      config:
+        enabled: true
+        prefix: @project.name@
+        defaultContext:  @project.version@
+        watch:
+          enabled: false
+          delay: 1000
+        format: yaml
+        data-key: data
+        profile-separator: '/'
+        acl-token: ${JAVA_ACL_TOKEN}
+      discovery:
+        prefer-ip-address: true
+        acl-token: ${JAVA_ACL_TOKEN}
+        management-suffix: management
+        #instance-id: EmilyGateway
+        ip-address: ${JAVA_LOCAL_IP}
+        port: ${JAVA_LOCAL_PORT}
+      host: ${JAVA_LOCAL_IP}
+      port: 8500

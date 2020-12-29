@@ -1,6 +1,9 @@
+server:
+  port: 9988
+management:
+  server:
+    port: 8988
 spring:
-  application:
-    name: Emily-Gateway
   cloud:
     gateway:
       routes:
