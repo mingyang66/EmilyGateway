@@ -1,28 +1,26 @@
 package com.emily.cloud.gateway.filter;
 
-import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * @program: spring-cloud-gateway
- * @description:
- * @author: 姚明洋
+ * @program: EmilyGateway
+ * @description: 网关全局过滤器
  * @create: 2020/12/22
  */
-@Component
-public class EmilyFilter implements GatewayFilter, Ordered {
+public class EmilyGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        System.out.println("-----------url:"+exchange.getRequest().getId());
+        System.out.println(exchange.getRequest().getId() + "-----------url:" + exchange.getRequest().getURI());
         return chain.filter(exchange);
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return Ordered.HIGHEST_PRECEDENCE;
     }
+
 }
