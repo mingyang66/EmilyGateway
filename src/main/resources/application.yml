@@ -16,11 +16,33 @@ management:
 spring:
   cloud:
     gateway:
+      global-filter:
+        reactive-load-balancer-client:
+          enabled: true
+          #   loadbalancer:
+          #    retry:
+          # 开启loadBalancer重试策略
+          #     enabled: true
+          # 表示应在HttpMethod#Get以外的操作上重试
+          #    retryOnAllOperations: true
+          # 在下一个ServiceInstance上执行的重试次数，默认：1
+          #   max-retries-on-next-service-instance: 2
+          # 在同一个ServiceInstance上执行的重试次数，默认：0
+          #  max-retries-on-same-service-instance: 0
+          # backoff:
+          #  enabled: false
+          #max-backoff:
+          #min-backoff:
+
+---
+spring:
+  cloud:
+    gateway:
       httpclient:
         # 连接超时，单位毫秒
         connect-timeout: 1000
         # 响应超时时间，{@link java.time.Duration}类型
-        response-timeout: '10s'
+        response-timeout: '3s'
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -42,6 +64,34 @@ spring:
           # 断言，路由条件，
           predicates:
             - Path=/api/**
+          filters:
+            - name: Retry
+              args:
+                #应尝试重试的次数
+                retries: 4
+                # 应该重试的Http状态码，使用{@link org.springframework.http.HttpStatus}
+                statuses: BAD_GATEWAY
+                # 应该重试的HTTP方法，用{@link org.springframework.http.HttpMethod}，默认：GET
+                methods: GET,POST
+                # 状态码配置，符合末端状态码才会进行重试逻辑，默认值是5(SERVER_ERROR)也就是5XX开头的状态码，
+                # 参考{@link org.springframework.http.HttpStatus.Series}
+                series: SERVER_ERROR
+                  # 抛出如下列表中的异常将会进行重试，默认是：IOException、TimeoutException
+                  #exceptions:
+                  # - java.io.IOException
+                  # - java.util.concurrent.TimeoutException
+                # 如果basedOnPreviousValue为true，下次重试的计算规则是prevBackoff * factor，但是最大只能为maxBackoff
+                # 如果basedOnPreviousValue为false
+                # 下次重试等待时间，第一次为firstBackoff * (factor ^ （n-1）)，n为迭代的次数，但是最大只能为maxBackoff
+                backoff:
+                  # 第一次重试等待时间
+                  firstBackoff: 10ms
+                  # 重试最大等待时间
+                  maxBackoff: 50ms
+                  # 因子
+                  factor: 2
+                  # 是否基于上次重试等待时间计算下次重试等待时间
+                  basedOnPreviousValue: false
         # 自定义路由ID,保持唯一
         - id: consul-demo
           #目标服务地址
@@ -51,8 +101,19 @@ spring:
           # 断言，路由条件，
           predicates:
             - Path=/http/**
+          filters:
+            - name: Retry
+              args:
+                retries: 2
+                statuses: BAD_GATEWAY
+                methods: GET,POST
+                backoff:
+                  firstBackoff: 10ms
+                  maxBackoff: 50ms
+                  factor: 2
+                  basedOnPreviousValue: false
           metadata:
             # 连接超时时间，单位：毫秒
             connect-timeout: 1000
             # 响应超时时间，单位：毫秒
-            response-timeout: 2000
+            response-timeout: 5000
