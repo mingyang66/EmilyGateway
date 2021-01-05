@@ -14,10 +14,22 @@ management:
       enabled: true
 ---
 spring:
+  redis:
+    host: localhost
+    port: 6379
+    username:
+    password: admin
+---
+spring:
   cloud:
+    loadbalancer:
+      ribbon:
+        # 关闭ribbon客户端负载均衡策略，默认：true
+        enabled: false
     gateway:
       global-filter:
         reactive-load-balancer-client:
+          # 开启reactive负载均衡过滤器能力，默认：true
           enabled: true
           #   loadbalancer:
           #    retry:
@@ -38,6 +50,9 @@ spring:
 spring:
   cloud:
     gateway:
+      #set-status:
+        # 结合SetStatus过滤器，将原始返回的状态码放入指定的响应header
+        #original-status-header-name: original-http-status
       httpclient:
         # 连接超时，单位毫秒
         connect-timeout: 1000
@@ -63,12 +78,101 @@ spring:
           order: 0
           # 断言，路由条件，
           predicates:
+            # 根据路由断言请求的目标服务器
             - Path=/api/**
+            # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
+            - Weight=EmilyFramework, 90
           filters:
+            # 删除前缀过滤器
+            - StripPrefix=1
+            # 添加指定前缀过滤器
+            - PrefixPath=/api
+            # 在发送请求之前，所有请求添加参数
+            - AddRequestParameter=name,emily
+            # 添加多个参数过滤器
+            - AddRequestParameter=age,1
+            # 添加请求Header过滤器
+            - AddRequestHeader=token,emily-token-request
+            # 添加响应Header过滤器
+            - AddResponseHeader=token,emily-token-response
+            # 删除请求Header过滤器
+            - RemoveRequestHeader=token
+            # 删除响应参数过滤器
+            - RemoveResponseHeader=token
+            # 删除请求参数过滤器
+            - RemoveRequestParameter=age
+            # 无论哪种情况，响应的HTTP状态都设置为指定值，必须为HttpStatus中指定
+            #- SetStatus=401
+            # 添加请求头（或者修改）
+            - SetRequestHeader=X-Request-Red, Yellow
+            # 替换指定的Header（或者添加）过滤器
+            - SetResponseHeader=X-Response-Red, Blue
+            # 指定覆盖请求Header Host的值过滤器
+            - SetRequestHostHeader=xxx.org
+            # 设置重定向地址url
+            #- RedirectTo=200, http://www.baidu.com
+            # 请求大小限制过滤器，默认是：5MB
+            - name: RequestSize
+              args:
+                # 最大请求大小，单位默认：B（支持org.springframework.util.unit.DataUnit类中定义的单位）
+                maxSize: 5MB
+            # 请求Header大小限制过滤器，默认是：16000B
+            - name: RequestHeaderSize
+              args:
+                # 最大请求大小，单位默认是：B（支持org.springframework.util.unit.DataUnit类中定义的单位）
+                maxSize: 16000B
+            # 通过指定的Header更改请求URL过滤器
+            - RequestHeaderToRequestUri=X-New-Url
+            # 将符合正则表达式的URL重写为指定的URL
+            #- RewritePath=/api/test2, /api/test4
+            - name: RewritePath
+              args:
+                # 原URL，支持正则表达式
+                regexp: /api/test2
+                # 将要被替换的URL
+                replacement: /api/test2
+            # 重写响应Header过滤器，支持正则表达式匹配
+            #- RewriteResponseHeader=X-Response-Header, Emily, Lovely Emily
+            - name: RewriteResponseHeader
+              args:
+                # Header名称
+                name: X-Response-Header
+                # Header中的内容，支持正则表达式
+                regexp: Emily
+                # 替换的内容
+                replacement: Lovely
+            # 重写指定响应Header的hostValue
+            #- RewriteLocationResponseHeader=AS_IN_REQUEST, Location, 127.0.0.1:8866, http
+            - name: RewriteLocationResponseHeader
+              args:
+                # 默认：AS_IN_REQUEST - 如果源请求URL不包含版本号，则去除版本号；
+                # NEVER_STRIP - 即使源URL不包含版本号，也不会去除版本号；
+                # ALWAYS_STRIP - 即使源URL包含版本号，也会去除版本号；
+                stripVersion: AS_IN_REQUEST
+                # 位置地址Header名
+                locationHeaderName: Location
+                # 如果设置，则将会替换Location Header头中的host:port，否则，将会使用请求Header的Host
+                hostValue: 127.0.0.1:8080
+                # 协议，默认https?|ftps?
+                protocols: http
+            # 限流过滤器
+            - name: RequestRateLimiter
+              # 限流参数如果想设置稳定的请求速度，可以将replenishRate和burstCapacity设置为一致
+              # 允许burstCapacity的值高于replenishRate的值，反之则无效
+              args:
+                # 希望允许用户在没有丢弃任何请求的情况下每秒执行的请求数，也是令牌桶的填充速度
+                redis-rate-limiter.replenishRate: 2
+                # 令牌桶的容量，允许在一秒钟内完成的最大请求数量，将此值设置为0将组织所有请求，默认：1
+                redis-rate-limiter.burstCapacity: 2
+                # 一个请求需要多少令牌，这是每个请求从bucket中获取的令牌数，默认：1
+                redis-rate-limiter.requestedTokens: 1
+                # 设置限流依据beanName
+                key-resolver: '#{@ipAddressKeyResolver}'
+            # 失败重试过滤器
             - name: Retry
               args:
                 #应尝试重试的次数
-                retries: 4
+                retries: 3
                 # 应该重试的Http状态码，使用{@link org.springframework.http.HttpStatus}
                 statuses: BAD_GATEWAY
                 # 应该重试的HTTP方法，用{@link org.springframework.http.HttpMethod}，默认：GET
@@ -77,9 +181,9 @@ spring:
                 # 参考{@link org.springframework.http.HttpStatus.Series}
                 series: SERVER_ERROR
                   # 抛出如下列表中的异常将会进行重试，默认是：IOException、TimeoutException
-                  #exceptions:
-                  # - java.io.IOException
-                  # - java.util.concurrent.TimeoutException
+                exceptions:
+                  - java.io.IOException
+                  - org.springframework.cloud.gateway.support.TimeoutException
                 # 如果basedOnPreviousValue为true，下次重试的计算规则是prevBackoff * factor，但是最大只能为maxBackoff
                 # 如果basedOnPreviousValue为false
                 # 下次重试等待时间，第一次为firstBackoff * (factor ^ （n-1）)，n为迭代的次数，但是最大只能为maxBackoff
@@ -100,13 +204,15 @@ spring:
           order: 0
           # 断言，路由条件，
           predicates:
-            - Path=/http/**
+            - Path=/api/**
+            - Weight=EmilyFramework, 10
           filters:
             - name: Retry
               args:
-                retries: 2
+                retries: 3
                 statuses: BAD_GATEWAY
                 methods: GET,POST
+                series: SERVER_ERROR
                 backoff:
                   firstBackoff: 10ms
                   maxBackoff: 50ms
