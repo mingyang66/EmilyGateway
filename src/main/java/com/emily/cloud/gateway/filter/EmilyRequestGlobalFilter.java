@@ -1,11 +1,15 @@
 package com.emily.cloud.gateway.filter;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -18,6 +22,8 @@ import java.nio.charset.Charset;
  * @create: 2020/12/22
  */
 public class EmilyRequestGlobalFilter implements GlobalFilter, Ordered {
+
+    private static Logger logger = LoggerFactory.getLogger(EmilyRequestGlobalFilter.class);
     /**
      * 优先级顺序
      */
@@ -26,7 +32,7 @@ public class EmilyRequestGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        if ("POST".equals(request.getMethodValue()))
+        if (StringUtils.endsWithIgnoreCase(HttpMethod.POST.name(), request.getMethodValue()))
             return DataBufferUtils.join(request.getBody()).flatMap(dataBuffer -> {
                 String bodyString = "";
                 try {
@@ -36,11 +42,11 @@ public class EmilyRequestGlobalFilter implements GlobalFilter, Ordered {
                 }
                 //释放内存
                 DataBufferUtils.release(dataBuffer);
-                System.out.println("请求日志：" + request.getId() + "-----------url:" + request.getURI() + "--params:" + bodyString);
+                logger.info("请求日志：" + request.getId() + "-----------url:" + request.getURI() + "--params:" + bodyString);
                 return chain.filter(exchange);
             });
-        System.out.println("请求日志：" + request.getId() + "-----------url:" + request.getURI() + "--params:" + request.getQueryParams());
 
+        logger.info("请求日志：" + request.getId() + "-----------url:" + request.getURI() + "--params:" + request.getQueryParams());
         return chain.filter(exchange);
     }
 

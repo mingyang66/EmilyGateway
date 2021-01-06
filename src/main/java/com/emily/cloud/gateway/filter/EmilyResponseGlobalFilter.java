@@ -2,11 +2,14 @@ package com.emily.cloud.gateway.filter;
 
 import org.apache.commons.io.IOUtils;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
@@ -21,6 +24,8 @@ import java.nio.charset.Charset;
  * @create: 2020/12/22
  */
 public class EmilyResponseGlobalFilter implements GlobalFilter, Ordered {
+
+    private static Logger logger = LoggerFactory.getLogger(EmilyResponseGlobalFilter.class);
     /**
      * 优先级顺序
      */
@@ -41,7 +46,9 @@ public class EmilyResponseGlobalFilter implements GlobalFilter, Ordered {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        System.out.println("响应日志：" + stringBuffer);
+                        //释放内存
+                        DataBufferUtils.release(dataBuffer);
+                        logger.info("响应日志：" + stringBuffer);
                         return bufferFactory.wrap(stringBuffer.getBytes());
                     }));
                 }
