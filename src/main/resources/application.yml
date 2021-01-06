@@ -1,6 +1,5 @@
 server:
   port: 9988
----
 management:
   server:
     port: 8988
@@ -19,32 +18,35 @@ spring:
     port: 6379
     username:
     password: admin
----
-spring:
   cloud:
     loadbalancer:
       ribbon:
         # 关闭ribbon客户端负载均衡策略，默认：true
         enabled: false
-    gateway:
-      global-filter:
-        reactive-load-balancer-client:
-          # 开启reactive负载均衡过滤器能力，默认：true
-          enabled: true
-          #   loadbalancer:
-          #    retry:
-          # 开启loadBalancer重试策略
-          #     enabled: true
-          # 表示应在HttpMethod#Get以外的操作上重试
-          #    retryOnAllOperations: true
-          # 在下一个ServiceInstance上执行的重试次数，默认：1
-          #   max-retries-on-next-service-instance: 2
-          # 在同一个ServiceInstance上执行的重试次数，默认：0
-          #  max-retries-on-same-service-instance: 0
-          # backoff:
-          #  enabled: false
-          #max-backoff:
-          #min-backoff:
+      cache:
+        # 开启springcloud loadbalancer负载均衡缓存机制，默认：true
+        enabled: true
+        # 缓存过期时间，默认：35 单位：s
+        #ttl: 35
+        # 缓存初始化容量，默认：256
+        #capacity: 256
+        # 使用java8高性能缓存caffeine
+        caffeine:
+          # initialCapacity：初始化容量，默认：-1
+          # ------------基于大小的驱逐策略--------------
+          # maximumSize：最大容量，默认：-1
+          # maximumWeight：权重大小，默认：-1（maximumSize和maximumWeight不可以同时设置）
+          # ------------基于引用的的去捉策略-------------
+          # weakKeys：使用弱引用存储key
+          # weakValues：使用弱引用存储value
+          # softValues：使用软引用存储value
+          # -------------基于时间的驱逐策略---------------
+          # expireAfterAccess：在最后一次访问或者写入后开始计时，在指定的时间后过期。假如一直有请求访问该Key，那么这个缓存将一直不会过期
+          # expireAfterWrite：在最后一次写入缓存后开始计时，在指定的时间后过期
+          # refreshAfterWrite：指定在创建或者最近一次更新缓存后经过固定的时间刷新缓存，
+          # recordStats: 开启统计监控功能
+          spec: initialCapacity=256,maximumSize=1000,expireAfterWrite=35s,recordStats
+
 
 ---
 spring:
@@ -82,6 +84,10 @@ spring:
             - Path=/api/**
             # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
             - Weight=EmilyFramework, 90
+            # 根据请求Host断言
+            - Host=172.30.67.**
+            # 根据请求头断言
+            #- Header=Content-Type, ^\w*/\w*$
           filters:
             # 删除前缀过滤器
             - StripPrefix=1
