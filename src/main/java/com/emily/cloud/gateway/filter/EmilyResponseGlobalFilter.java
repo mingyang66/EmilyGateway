@@ -1,6 +1,7 @@
 package com.emily.cloud.gateway.filter;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,13 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @program: EmilyGateway
@@ -39,17 +45,27 @@ public class EmilyResponseGlobalFilter implements GlobalFilter, Ordered {
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 if (body instanceof Flux) {
                     Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
-                    return super.writeWith(fluxBody.map(dataBuffer -> {
-                        String stringBuffer = "";
-                        try {
-                            stringBuffer = IOUtils.toString(dataBuffer.asInputStream(), Charset.defaultCharset());
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    return super.writeWith(fluxBody.buffer().map(dataBuffers -> {
+                        byte[] allBytes = new byte[]{};
+                        //解决分片传输多次返回问题
+                        List<byte[]> list = dataBuffers.stream().map(dataBuffer -> {
+                            //新建存放响应体的字节数组
+                            byte[] content = new byte[dataBuffer.readableByteCount()];
+                            //将响应数据读取到字节数组
+                            dataBuffer.read(content);
+                            //释放内存
+                            DataBufferUtils.release(dataBuffer);
+                            return content;
+                        }).collect(toList());
+
+                        for (int i = 0; i < list.size(); i++) {
+                            allBytes = ArrayUtils.addAll(allBytes, list.get(i));
                         }
-                        //释放内存
-                        DataBufferUtils.release(dataBuffer);
-                        logger.info("响应日志：" + stringBuffer);
-                        return bufferFactory.wrap(stringBuffer.getBytes());
+                        //获取响应body
+                        String bodyString = new String(allBytes, Charset.forName("UTF-8"));
+
+                        logger.info("响应日志：" + exchange.getRequest().getId() + "-----------" + bodyString);
+                        return bufferFactory.wrap(allBytes);
                     }));
                 }
                 return super.writeWith(body);
@@ -66,5 +82,16 @@ public class EmilyResponseGlobalFilter implements GlobalFilter, Ordered {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public static void main(String[] args) {
+        String[] words = new String[]{"Hello", "World"};
+        List<byte[]> a = Arrays.stream(words)
+                .map(word -> word.getBytes())
+                //.flatMap(Arrays::stream)
+                .collect(toList());
+        for (int i = 0; i < a.size(); i++) {
+
+        }
     }
 }

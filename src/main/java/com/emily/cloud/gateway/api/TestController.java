@@ -19,4 +19,17 @@ public class TestController {
         return "Gateway is quickly";
     }
 
+    public static void main(String[] args) {
+        SleuthTraceController sleuthTraceController = new SleuthTraceController();
+        SleuthTraceController sleuthTraceController1 = new SleuthTraceController();
+        System.out.println(getIdentityHexString(sleuthTraceController));
+        System.out.println(getIdentityHexString(sleuthTraceController));
+        System.out.println(getIdentityHexString(sleuthTraceController));
+        System.out.println(getIdentityHexString(sleuthTraceController1));
+        System.out.println(getIdentityHexString(sleuthTraceController1));
+
+    }
+    public static String getIdentityHexString(Object obj) {
+        return Integer.toHexString(System.identityHashCode(obj));
+    }
 }

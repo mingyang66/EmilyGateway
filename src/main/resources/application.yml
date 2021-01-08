@@ -1,5 +1,7 @@
 server:
   port: 9988
+  #优雅停机
+  shutdown: graceful
 management:
   server:
     port: 8988
@@ -46,7 +48,30 @@ spring:
           # refreshAfterWrite：指定在创建或者最近一次更新缓存后经过固定的时间刷新缓存，
           # recordStats: 开启统计监控功能
           spec: initialCapacity=256,maximumSize=1000,expireAfterWrite=35s,recordStats
-
+  zipkin:
+    # zipkin服务器地址，默认是：http://localhost:9411/
+    base-url: http://172.30.67.122:9411
+    service:
+      # zipkin中展示的服务名称
+      name: ${spring.application.name}
+    sender:
+      # 向zipkin发送spans的方法，默认：web
+      type: web
+  sleuth:
+    reactor:
+      # 链路追踪上下文的侵入性，manual：以最小的侵入性的方式包装每个REACTOR，而无需通过跟踪上下文，为了向后兼容，默认是：DECORATE_ON_EACH
+      instrumentation-type: decorate_on_each
+    sampler:
+      # 采样率，0-1上的小数
+      probability: 1.0
+    redis:
+      # 启用Redis跨域信息传播
+      enabled: true
+      # 服务名
+      remote-service-name: redis
+    integration:
+      # 启用spring集成sleuth instrumentation
+      enabled: true
 
 ---
 spring:
@@ -167,9 +192,9 @@ spring:
               # 允许burstCapacity的值高于replenishRate的值，反之则无效
               args:
                 # 希望允许用户在没有丢弃任何请求的情况下每秒执行的请求数，也是令牌桶的填充速度
-                redis-rate-limiter.replenishRate: 2
+                redis-rate-limiter.replenishRate: 1000
                 # 令牌桶的容量，允许在一秒钟内完成的最大请求数量，将此值设置为0将组织所有请求，默认：1
-                redis-rate-limiter.burstCapacity: 2
+                redis-rate-limiter.burstCapacity: 1000
                 # 一个请求需要多少令牌，这是每个请求从bucket中获取的令牌数，默认：1
                 redis-rate-limiter.requestedTokens: 1
                 # 设置限流依据beanName
@@ -205,7 +230,7 @@ spring:
         # 自定义路由ID,保持唯一
         - id: consul-demo
           #目标服务地址
-          uri: lb://consul-demo
+          uri: lb://EmilyFramework
           #顺序，当请求匹配到多个路由时，使用顺序小的
           order: 0
           # 断言，路由条件，
