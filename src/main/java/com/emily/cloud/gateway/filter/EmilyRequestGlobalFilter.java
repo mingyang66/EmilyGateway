@@ -8,7 +8,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -35,7 +34,7 @@ public class EmilyRequestGlobalFilter implements GlobalFilter, Ordered {
         // 获取网关请求服务地址
         URI url = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
         ServerHttpRequest request = exchange.getRequest();
-        if (StringUtils.endsWithIgnoreCase(HttpMethod.POST.name(), request.getMethodValue()))
+        if (request.getMethod() == HttpMethod.POST)
             return DataBufferUtils.join(request.getBody()).flatMap(dataBuffer -> {
                 //新建存放响应体的字节数组
                 byte[] content = new byte[dataBuffer.readableByteCount()];

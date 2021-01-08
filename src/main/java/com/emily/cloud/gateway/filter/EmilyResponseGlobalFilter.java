@@ -1,7 +1,6 @@
 package com.emily.cloud.gateway.filter;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -84,14 +80,4 @@ public class EmilyResponseGlobalFilter implements GlobalFilter, Ordered {
         this.order = order;
     }
 
-    public static void main(String[] args) {
-        String[] words = new String[]{"Hello", "World"};
-        List<byte[]> a = Arrays.stream(words)
-                .map(word -> word.getBytes())
-                //.flatMap(Arrays::stream)
-                .collect(toList());
-        for (int i = 0; i < a.size(); i++) {
-
-        }
-    }
 }
