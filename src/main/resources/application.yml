@@ -72,6 +72,15 @@ spring:
     integration:
       # 启用spring集成sleuth instrumentation
       enabled: true
+    # 断路器
+    circuitbreaker:
+      # seluth是否开启断路器检查，默认：true
+      enabled: true
+      resilience4j:
+        # 关闭resilience4j断路器自动化配置
+        enabled: false
+        blocking:
+          enabled: false
 
 ---
 spring:
@@ -80,7 +89,7 @@ spring:
       loadbalancer:
         # 负载均衡503服务不可用时将状态码更换为404，默认：false
         use404: true
-      #set-status:
+        #set-status:
         # 结合SetStatus过滤器，将原始返回的状态码放入指定的响应header
         #original-status-header-name: original-http-status
       httpclient:
@@ -88,6 +97,15 @@ spring:
         connect-timeout: 1000
         # 响应超时时间，{@link java.time.Duration}类型
         response-timeout: '3s'
+        # 最大响应头大小，默认:8192，单位：字节B
+        max-header-size: 8192
+        # 最大初始行大小，单位：字节B
+        max-initial-line-length: 4096
+        pool:
+          # channel pool映射名称，默认：proxy
+          name: proxy
+          # HttpClient要使用的池的类型，默认：elastic
+          type: elastic
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -214,7 +232,7 @@ spring:
                 # 状态码配置，符合末端状态码才会进行重试逻辑，默认值是5(SERVER_ERROR)也就是5XX开头的状态码，
                 # 参考{@link org.springframework.http.HttpStatus.Series}
                 series: SERVER_ERROR
-                  # 抛出如下列表中的异常将会进行重试，默认是：IOException、TimeoutException
+                # 抛出如下列表中的异常将会进行重试，默认是：IOException、TimeoutException
                 exceptions:
                   - java.io.IOException
                   - org.springframework.cloud.gateway.support.TimeoutException
