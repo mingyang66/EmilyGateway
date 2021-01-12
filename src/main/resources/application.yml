@@ -77,6 +77,9 @@ spring:
 spring:
   cloud:
     gateway:
+      loadbalancer:
+        # 负载均衡503服务不可用时将状态码更换为404，默认：false
+        use404: true
       #set-status:
         # 结合SetStatus过滤器，将原始返回的状态码放入指定的响应header
         #original-status-header-name: original-http-status
@@ -108,7 +111,7 @@ spring:
             # 根据路由断言请求的目标服务器
             - Path=/api/**
             # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
-            - Weight=EmilyFramework, 90
+            - Weight=EmilyFrameworkGroup, 80
             # 根据请求Host断言
             - Host=172.30.67.**
             # 根据请求头断言
@@ -230,13 +233,13 @@ spring:
         # 自定义路由ID,保持唯一
         - id: consul-demo
           #目标服务地址
-          uri: lb://EmilyFramework
+          uri: lb://consul-demo
           #顺序，当请求匹配到多个路由时，使用顺序小的
           order: 0
           # 断言，路由条件，
           predicates:
             - Path=/api/**
-            - Weight=EmilyFramework, 10
+            - Weight=EmilyFrameworkGroup, 20
           filters:
             - name: Retry
               args:
