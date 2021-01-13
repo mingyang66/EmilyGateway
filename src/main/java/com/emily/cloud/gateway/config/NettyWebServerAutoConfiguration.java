@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.HttpHandler;
 import reactor.core.publisher.Mono;
 
@@ -44,6 +45,8 @@ public class NettyWebServerAutoConfiguration {
                 } catch (URISyntaxException e) {
                     return Mono.error(e);
                 }
+                //https://tools.ietf.org/html/rfc7231#section-6.4.2
+                response.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
                 return response.setComplete();
             }));
         } else {
