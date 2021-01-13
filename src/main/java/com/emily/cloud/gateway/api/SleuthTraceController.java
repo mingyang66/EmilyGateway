@@ -14,7 +14,6 @@ import org.springframework.web.server.ServerWebExchange;
 /**
  * @program: EmilyGateway
  * @description: sleuth日志追踪
- * @author: 姚明洋
  * @create: 2021/01/07
  */
 @RestController

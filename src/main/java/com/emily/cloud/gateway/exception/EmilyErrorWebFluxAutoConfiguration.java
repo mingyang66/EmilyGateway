@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 /**
  * @program: EmilyGateway
  * @description: 自定义异常处理自动化配置类
- * @author: 姚明洋
  * @create: 2021/01/06
  */
 @ControllerAdvice

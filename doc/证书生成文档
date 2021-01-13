@@ -1,0 +1,1 @@
+keytool -genkey -alias emily -keypass 123456 -keyalg RSA -keysize 1024 -validity 3650 -keystore D:\emily.pfx -deststoretype pkcs12 -storepass 123456

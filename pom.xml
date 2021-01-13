@@ -20,6 +20,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
             <version>3.0.0</version>
@@ -99,6 +103,22 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <encoding>utf-8</encoding>
+                    <!-- 解决Spring boot引起的profile失效问题 -->
+                    <useDefaultDelimiters>true</useDefaultDelimiters>
+                    <!-- 过滤后缀为p12、pem、pfx的证书文件 -->
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>p12</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>cer</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>pem</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>pfx</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
             </plugin>
         </plugins>
     </build>

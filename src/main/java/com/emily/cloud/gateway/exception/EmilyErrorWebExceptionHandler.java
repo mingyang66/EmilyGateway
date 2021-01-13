@@ -17,7 +17,6 @@ import java.util.Map;
 /**
  * @program: EmilyGateway
  * @description: 自定义异常处理
- * @author: 姚明洋
  * @create: 2021/01/06
  */
 public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandler {

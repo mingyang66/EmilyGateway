@@ -7,7 +7,6 @@ import reactor.core.publisher.Mono;
 /**
  * @program: EmilyGateway
  * @description: 限流依据 IP地址
- * @author: 姚明洋
  * @create: 2020/12/31
  */
 public class IpAddressKeyResolver implements KeyResolver {
