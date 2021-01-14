@@ -22,7 +22,7 @@ spring:
           # HttpClient要使用的池的类型，默认：elastic
           type: elastic
         ssl:
-          # 信任下游的所有证书
+          # 信任下游的所有证书TLS, 默认：false
           use-insecure-trust-manager: true
       globalcors:
         corsConfigurations:

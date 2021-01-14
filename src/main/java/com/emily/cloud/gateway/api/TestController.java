@@ -1,5 +1,6 @@
 package com.emily.cloud.gateway.api;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("quickly")
+    @Timed(value = "asfd", description = "afd")
     public String gateway(){
 
         return "Gateway is quickly";
