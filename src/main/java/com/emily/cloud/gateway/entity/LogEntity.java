@@ -75,10 +75,7 @@ public class LogEntity implements Serializable {
         this.setMethod(request.getMethodValue());
         this.setParams(getRequestParams(exchange));
         this.setRequestDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
-        MediaType mediaType = request.getHeaders().getContentType();
-        if(mediaType != null){
-            this.setContentType(MediaType.toString(Arrays.asList(mediaType)));
-        }
+        this.setContentType(request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType())));
     }
     /**
      * 获取请求参数

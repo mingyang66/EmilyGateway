@@ -116,7 +116,13 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
             }
 
             /**
-             * MediaType.TEXT_EVENT_STREAM,MediaType.APPLICATION_STREAM_JSON 类型时会执行此方法
+             * 支持如下两种数据类型：
+             * MediaType.TEXT_EVENT_STREAM - 是SSE(Server-Sent Events) 是websocket的一种轻型替代方案，和websocket有如下几点不同：
+             *                               SSE是使用http协议，而websocket是一种单独的协议
+             *                               SSE是单向传输，只能服务端想客户端推送，websocket是双向的
+             *                               SSE支持断点续传，websocket需要自己实现
+             *                               SSE支持发送自定义类型消息
+             * MediaType.APPLICATION_STREAM_JSON - 主要用于支持webflux
              * @param body 响应数据
              */
             @Override
