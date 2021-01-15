@@ -32,7 +32,7 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
         return RouterFunctions.route(RequestPredicates.all(), this::renderErrorResponse);
     }
 
-    @Override
+  /*  @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
         Map<String, Object> errorAttributes = super.getErrorAttributes(request, options);
         Map<String, Object> errorData = new LinkedHashMap<>();
@@ -40,5 +40,5 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
         errorData.put("message", StringUtils.join(errorAttributes.get("error")));
         logger.error(errorAttributes.toString());
         return errorData;
-    }
+    }*/
 }

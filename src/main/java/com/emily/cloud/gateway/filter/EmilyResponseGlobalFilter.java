@@ -1,5 +1,6 @@
 package com.emily.cloud.gateway.filter;
 
+import com.emily.cloud.gateway.utils.GZIPUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -8,14 +9,14 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -35,10 +36,19 @@ public class EmilyResponseGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        DataBufferFactory bufferFactory = exchange.getResponse().bufferFactory();
-        ServerHttpResponseDecorator serverHttpResponseDecorator = new ServerHttpResponseDecorator(exchange.getResponse()) {
+        return chain.filter(exchange.mutate().response(getServerHttpResponseDecorator(exchange)).build());
+    }
+
+    /**
+     * 获取请求响应装饰器类
+     *
+     * @param exchange 网关上下文
+     */
+    protected ServerHttpResponseDecorator getServerHttpResponseDecorator(ServerWebExchange exchange) {
+        return new ServerHttpResponseDecorator(exchange.getResponse()) {
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                HttpHeaders headers = exchange.getResponse().getHeaders();
                 if (body instanceof Flux) {
                     Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
                     return super.writeWith(fluxBody.buffer().map(dataBuffers -> {
@@ -58,17 +68,19 @@ public class EmilyResponseGlobalFilter implements GlobalFilter, Ordered {
                             allBytes = ArrayUtils.addAll(allBytes, list.get(i));
                         }
                         //获取响应body
-                        String bodyString = new String(allBytes, Charset.forName("UTF-8"));
-
+                        String bodyString;
+                        if (headers.containsKey(HttpHeaders.CONTENT_ENCODING) && "gzip".equalsIgnoreCase(headers.get(HttpHeaders.CONTENT_ENCODING).get(0))) {
+                            bodyString = GZIPUtils.decompressToString(allBytes);
+                        } else {
+                            bodyString = new String(allBytes, StandardCharsets.UTF_8);
+                        }
                         logger.info("响应日志：" + exchange.getRequest().getId() + "-----------" + bodyString);
-                        return bufferFactory.wrap(allBytes);
+                        return exchange.getResponse().bufferFactory().wrap(allBytes);
                     }));
                 }
                 return super.writeWith(body);
             }
         };
-
-        return chain.filter(exchange.mutate().response(serverHttpResponseDecorator).build());
     }
 
     @Override

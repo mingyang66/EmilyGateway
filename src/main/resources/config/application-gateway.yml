@@ -193,3 +193,10 @@ spring:
             connect-timeout: 1000
             # 响应超时时间，单位：毫秒
             response-timeout: 5000
+        - id: tradeApi
+          uri: lb://EMIS-Data-Docker-DataCenter
+          order: 0
+          predicates:
+            - Path=/tradeApi/**
+          filters:
+            - StripPrefix=1
