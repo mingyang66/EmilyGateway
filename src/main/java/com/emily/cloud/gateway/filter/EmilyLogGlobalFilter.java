@@ -38,15 +38,12 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
 
     private static Logger logger = LoggerFactory.getLogger(EmilyLogGlobalFilter.class);
+
     /**
      * 优先级顺序
      */
     private int order;
 
-    /**
-     * 响应数据属性KEY
-     */
-    private String EMILY_RESPONSE_BODY = "EMILY_RESPONSE_BODY";
     /**
      * 日志实体对象
      */
@@ -76,21 +73,21 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      */
     protected Mono<Void> doLogResponse(ServerWebExchange exchange) {
         LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
+        // 设置请求URL
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
+        // 设置响应时间
         logEntity.setResponseDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         // 响应数据类型
         MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
-        if (mediaType != null) {
-            logEntity.setResponseContentType(MediaType.toString(Arrays.asList(mediaType)));
-        }
-        // 响应数据
-        logEntity.setData(exchange.getAttribute(EMILY_RESPONSE_BODY));
+        // 设置响应数据类型
+        logEntity.setResponseContentType(mediaType == null ? null : MediaType.toString(Arrays.asList(mediaType)));
+        // 记录日志信息
         logger.info(JSONUtils.toJSONString(logEntity));
         return Mono.empty();
     }
 
     /**
-     * 获取请求响应装饰器类
+     * 获取请求响应装饰器类，参考：{@link org.springframework.cloud.gateway.filter.NettyWriteResponseFilter}
      *
      * @param exchange 网关上下文
      */
@@ -98,6 +95,9 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                /**
+                 * 解析响应数据，并将解析后的结果放入网关上下文
+                 */
                 if (body instanceof Flux) {
                     Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
                     return super.writeWith(fluxBody.buffer().map(dataBuffers -> {
@@ -105,12 +105,23 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
                         byte[] allBytes = DataBufferUtils.dataBufferToByte(dataBuffers);
                         // 获取响应body
                         String bodyString = convertToString(exchange, allBytes);
+                        // 获取日志实体类
+                        LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
                         // 设置响应body
-                        exchange.getAttributes().put(EMILY_RESPONSE_BODY, convertToObj(exchange, bodyString));
+                        logEntity.setData(convertToObj(exchange, bodyString));
                         return exchange.getResponse().bufferFactory().wrap(allBytes);
                     }));
                 }
                 return super.writeWith(body);
+            }
+
+            /**
+             * MediaType.TEXT_EVENT_STREAM,MediaType.APPLICATION_STREAM_JSON 类型时会执行此方法
+             * @param body 响应数据
+             */
+            @Override
+            public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
+                return super.writeAndFlushWith(body);
             }
         };
     }
