@@ -62,7 +62,6 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
     }
 
     /**
-     *
      * @param exchange
      */
     protected void doLogException(ServerWebExchange exchange) {
@@ -99,19 +98,13 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                HttpHeaders headers = exchange.getResponse().getHeaders();
                 if (body instanceof Flux) {
                     Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
                     return super.writeWith(fluxBody.buffer().map(dataBuffers -> {
                         // 将DataBuffer转换为字节数组，兼容分片传输
                         byte[] allBytes = DataBufferUtils.dataBufferToByte(dataBuffers);
                         // 获取响应body
-                        String bodyString;
-                        if (headers.containsKey(HttpHeaders.CONTENT_ENCODING) && "gzip".equalsIgnoreCase(headers.get(HttpHeaders.CONTENT_ENCODING).get(0))) {
-                            bodyString = GZIPUtils.decompressToString(allBytes);
-                        } else {
-                            bodyString = new String(allBytes, StandardCharsets.UTF_8);
-                        }
+                        String bodyString = convertToString(exchange, allBytes);
                         // 设置响应body
                         exchange.getAttributes().put(EMILY_RESPONSE_BODY, convertToObj(exchange, bodyString));
                         return exchange.getResponse().bufferFactory().wrap(allBytes);
@@ -120,6 +113,22 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
                 return super.writeWith(body);
             }
         };
+    }
+
+    /**
+     * 将字节数组转换为字符串
+     *
+     * @param exchange 网关上下文
+     * @param allBytes 字节数组
+     * @return 响应结果
+     */
+    protected String convertToString(ServerWebExchange exchange, byte[] allBytes) {
+        HttpHeaders headers = exchange.getResponse().getHeaders();
+        // 获取响应body
+        if (headers.containsKey(HttpHeaders.CONTENT_ENCODING) && "gzip".equalsIgnoreCase(headers.get(HttpHeaders.CONTENT_ENCODING).get(0))) {
+            return GZIPUtils.decompressToString(allBytes);
+        }
+        return new String(allBytes, StandardCharsets.UTF_8);
     }
 
     /**
