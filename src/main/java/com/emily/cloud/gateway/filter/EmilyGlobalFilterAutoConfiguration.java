@@ -25,14 +25,14 @@ public class EmilyGlobalFilterAutoConfiguration {
     }
 
     /**
-     * 注册响应日志拦截全局过滤器
+     * 注册请求响应日志拦截全局过滤器
      */
     @Bean
-    public EmilyResponseGlobalFilter emilyResponseGlobalFilter() {
-        EmilyResponseGlobalFilter emilyGlobalFilter = new EmilyResponseGlobalFilter();
+    public EmilyLogGlobalFilter emilyLogGlobalFilter() {
+        EmilyLogGlobalFilter emilyLogGlobalFilter = new EmilyLogGlobalFilter();
         //设置优先级顺序在{@link org.springframework.cloud.gateway.filter.NettyWriteResponseFilter}(-1)过滤器之后，方便获取到真实的请求地址
-        emilyGlobalFilter.setOrder(NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER - 1);
-        return emilyGlobalFilter;
+        emilyLogGlobalFilter.setOrder(NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER - 1);
+        return emilyLogGlobalFilter;
     }
 
     /**
