@@ -1,11 +1,11 @@
 package com.emily.cloud.gateway.filter;
 
 import com.emily.cloud.gateway.entity.LogEntity;
+import com.emily.cloud.gateway.utils.DataBufferUtils;
 import com.emily.cloud.gateway.utils.GZIPUtils;
 import com.emily.cloud.gateway.utils.JSONUtils;
 import com.emily.cloud.gateway.utils.enums.DateFormatEnum;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
@@ -29,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
 /**
@@ -44,6 +42,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      * 优先级顺序
      */
     private int order;
+
     /**
      * 响应数据属性KEY
      */
@@ -57,12 +56,16 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         exchange.getAttributes().put(EMILY_LOG_ENTITY, new LogEntity(exchange));
         return chain.filter(exchange.mutate().response(getServerHttpResponseDecorator(exchange)).build())
-                .doOnError(throwable -> doException(exchange))
+                .doOnError(throwable -> doLogException(exchange))
                 .then(Mono.defer(() -> doLogResponse(exchange)))
-                .doOnCancel(()-> System.out.println("---------doOnCancel----------"));
+                .doOnCancel(() -> System.out.println("---------doOnCancel----------"));
     }
 
-    protected void doException(ServerWebExchange exchange) {
+    /**
+     *
+     * @param exchange
+     */
+    protected void doLogException(ServerWebExchange exchange) {
         System.out.println("-------------doException--------");
     }
 
@@ -100,21 +103,8 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
                 if (body instanceof Flux) {
                     Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
                     return super.writeWith(fluxBody.buffer().map(dataBuffers -> {
-                        byte[] allBytes = new byte[]{};
-                        // 解决分片传输多次返回问题
-                        List<byte[]> list = dataBuffers.stream().map(dataBuffer -> {
-                            // 新建存放响应体的字节数组
-                            byte[] content = new byte[dataBuffer.readableByteCount()];
-                            // 将响应数据读取到字节数组
-                            dataBuffer.read(content);
-                            // 释放内存
-                            DataBufferUtils.release(dataBuffer);
-                            return content;
-                        }).collect(toList());
-
-                        for (int i = 0; i < list.size(); i++) {
-                            allBytes = ArrayUtils.addAll(allBytes, list.get(i));
-                        }
+                        // 将DataBuffer转换为字节数组，兼容分片传输
+                        byte[] allBytes = DataBufferUtils.dataBufferToByte(dataBuffers);
                         // 获取响应body
                         String bodyString;
                         if (headers.containsKey(HttpHeaders.CONTENT_ENCODING) && "gzip".equalsIgnoreCase(headers.get(HttpHeaders.CONTENT_ENCODING).get(0))) {
@@ -162,5 +152,4 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
     public void setOrder(int order) {
         this.order = order;
     }
-
 }
