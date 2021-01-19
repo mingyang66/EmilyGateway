@@ -53,16 +53,28 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         exchange.getAttributes().put(EMILY_LOG_ENTITY, new LogEntity(exchange));
         return chain.filter(exchange.mutate().response(getServerHttpResponseDecorator(exchange)).build())
-                .doOnError(throwable -> doLogException(exchange))
+                .doOnError(throwable -> doLogException(exchange, throwable))
                 .then(Mono.defer(() -> doLogResponse(exchange)))
                 .doOnCancel(() -> System.out.println("---------doOnCancel----------"));
     }
-
+    
     /**
      * @param exchange
      */
-    protected void doLogException(ServerWebExchange exchange) {
-        System.out.println("-------------doException--------");
+    protected void doLogException(ServerWebExchange exchange, Throwable throwable) {
+        LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
+        // 设置请求URL
+        logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
+        // 设置响应时间
+        logEntity.setResponseDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
+        // 响应数据类型
+        MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
+        // 设置响应数据类型
+        logEntity.setResponseContentType(mediaType == null ? null : MediaType.toString(Arrays.asList(mediaType)));
+        // 设置返回的错误信息
+        logEntity.setData(throwable.getMessage());
+        // 记录日志信息
+        logger.error(JSONUtils.toJSONString(logEntity));
     }
 
     /**

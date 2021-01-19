@@ -112,8 +112,6 @@ spring:
         health-check-critical-timeout: 60s
         # 如果为true,则在服务检查期间跳过证书验证，否则运行证书验证
         health-check-tls-skip-verify: true
-        catalog-services-watch:
-          enable: false
         # 监视consul配置文件时间间隔，即一次执行结束到下一次执行开始之间的时间间隔，默认：1000毫秒
         catalog-services-watch-delay: 1000
         # 监视consul配置文件的超时时间，默认：2秒

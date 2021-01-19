@@ -43,6 +43,10 @@ public class LogEntity implements Serializable {
      */
     private String contentType;
     /**
+     * 协议
+     */
+    private String protocol;
+    /**
      * 请求URL
      */
     private String url;
@@ -76,6 +80,7 @@ public class LogEntity implements Serializable {
         this.setParams(getRequestParams(exchange));
         this.setRequestDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         this.setContentType(request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType())));
+        this.setProtocol(request.getURI().getScheme());
     }
     /**
      * 获取请求参数
@@ -177,5 +182,13 @@ public class LogEntity implements Serializable {
 
     public void setTraceType(TraceType traceType) {
         this.traceType = traceType;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
     }
 }
