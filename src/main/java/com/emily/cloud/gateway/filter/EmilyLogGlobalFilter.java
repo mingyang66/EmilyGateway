@@ -35,6 +35,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * @description: 网关全局过滤器，拦截请求响应日志
  * @create: 2020/12/22
  */
+@SuppressWarnings("all")
 public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
 
     private static Logger logger = LoggerFactory.getLogger(EmilyLogGlobalFilter.class);
@@ -54,8 +55,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         exchange.getAttributes().put(EMILY_LOG_ENTITY, new LogEntity(exchange));
         return chain.filter(exchange.mutate().response(getServerHttpResponseDecorator(exchange)).build())
                 .doOnError(throwable -> doLogException(exchange, throwable))
-                .then(Mono.defer(() -> doLogResponse(exchange)))
-                .doOnCancel(() -> System.out.println("---------doOnCancel----------"));
+                .then(Mono.defer(() -> doLogResponse(exchange)));
     }
     
     /**
