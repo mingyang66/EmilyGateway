@@ -56,7 +56,10 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         return chain.filter(exchange.mutate().response(getServerHttpResponseDecorator(exchange)).build())
                 //如果Mono在没有数据的情况下完成，则要调用的回调参数为null
                 .doOnSuccess((args) -> doLogSuccess(exchange, args))
-                .doOnError(throwable -> doLogError(exchange, throwable));
+                // 当Mono完成并出现错误时触发，将会发送onError信号
+                .doOnError(throwable -> doLogError(exchange, throwable))
+                // 以任何理由终止的信号类型将会传递给此消费者
+                .doFinally(signalType -> logger.info("信号类型："+signalType));
     }
 
     /**
