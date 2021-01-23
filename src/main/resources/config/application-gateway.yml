@@ -52,6 +52,8 @@ spring:
             - Host=172.30.67.**
             # 根据请求头断言
             #- Header=Content-Type, ^\w*/\w*$
+            - # 根据请求HEAD头断言
+            - Method=POST,GET
           filters:
             # 删除前缀过滤器
             - StripPrefix=1
@@ -176,6 +178,7 @@ spring:
           predicates:
             - Path=/api/**
             - Weight=EmilyFrameworkGroup, 20
+            - Method=POST,GET
           filters:
             - name: Retry
               args:
