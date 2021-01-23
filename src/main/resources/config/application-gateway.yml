@@ -54,7 +54,7 @@ spring:
             #- Header=Content-Type, ^\w*/\w*$
             # 根据请求HEAD头断言
             - Method=POST,GET
-            # 根据请求参数断言，请求参数在路径后拼接模式，一般般指Get
+            # 根据请求参数断言，请求参数在路径后拼接模式
             - Query=name,emily*
           filters:
             # 删除前缀过滤器
@@ -182,7 +182,7 @@ spring:
             - Weight=EmilyFrameworkGroup, 20
             # 根据请求HEAD头断言
             - Method=POST,GET
-            # 根据请求参数断言，请求参数在路径后拼接模式，一般般指Get
+            # 根据请求参数断言，请求参数在路径后拼接模式
             - Query=name,emily*
           filters:
             - name: Retry
