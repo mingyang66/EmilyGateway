@@ -1,8 +1,5 @@
 package com.emily.cloud.gateway.exception;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
@@ -21,7 +18,6 @@ import java.util.Map;
  */
 public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(EmilyErrorWebExceptionHandler.class);
 
     public EmilyErrorWebExceptionHandler(ErrorAttributes errorAttributes, WebProperties.Resources resources, ErrorProperties errorProperties, ApplicationContext applicationContext) {
         super(errorAttributes, resources, errorProperties, applicationContext);
@@ -37,8 +33,7 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
         Map<String, Object> errorAttributes = super.getErrorAttributes(request, options);
         Map<String, Object> errorData = new LinkedHashMap<>();
         errorData.put("status", errorAttributes.get("status"));
-        errorData.put("message", StringUtils.join(errorAttributes.get("error")));
-        logger.error(errorAttributes.toString());
+        errorData.put("message", errorAttributes.get("error"));
         return errorData;
     }
 }
