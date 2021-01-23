@@ -54,14 +54,15 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         exchange.getAttributes().put(EMILY_LOG_ENTITY, new LogEntity(exchange));
         return chain.filter(exchange.mutate().response(getServerHttpResponseDecorator(exchange)).build())
-                .doOnError(throwable -> doLogException(exchange, throwable))
-                .then(Mono.defer(() -> doLogResponse(exchange)));
+                //如果Mono在没有数据的情况下完成，则要调用的回调参数为null
+                .doOnSuccess((args) -> doLogSuccess(exchange, args))
+                .doOnError(throwable -> doLogError(exchange, throwable));
     }
-    
+
     /**
      * @param exchange
      */
-    protected void doLogException(ServerWebExchange exchange, Throwable throwable) {
+    protected void doLogError(ServerWebExchange exchange, Throwable throwable) {
         LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
         // 设置请求URL
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
@@ -83,7 +84,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      * @param exchange
      * @return
      */
-    protected Mono<Void> doLogResponse(ServerWebExchange exchange) {
+    protected Mono<Void> doLogSuccess(ServerWebExchange exchange, Object args) {
         LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
         // 设置请求URL
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());

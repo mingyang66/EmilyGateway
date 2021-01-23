@@ -1,16 +1,18 @@
 package com.emily.cloud.gateway.exception;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.reactive.function.server.RequestPredicates;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.reactive.function.server.*;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @program: EmilyGateway
@@ -30,7 +32,7 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
         return RouterFunctions.route(RequestPredicates.all(), this::renderErrorResponse);
     }
 
-  /*  @Override
+    @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
         Map<String, Object> errorAttributes = super.getErrorAttributes(request, options);
         Map<String, Object> errorData = new LinkedHashMap<>();
@@ -38,5 +40,5 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
         errorData.put("message", StringUtils.join(errorAttributes.get("error")));
         logger.error(errorAttributes.toString());
         return errorData;
-    }*/
+    }
 }
