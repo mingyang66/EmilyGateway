@@ -52,10 +52,10 @@ spring:
             - Host=172.30.67.**
             # 根据请求头断言
             #- Header=Content-Type, ^\w*/\w*$
-            # 根据请求HEAD头断言
+            # 根据请求Method头断言
             - Method=POST,GET
             # 根据请求参数断言，请求参数在路径后拼接模式
-            - Query=name,emily*
+            #- Query=name,emily*
           filters:
             # 删除前缀过滤器
             - StripPrefix=1
@@ -180,7 +180,7 @@ spring:
           predicates:
             - Path=/api/**
             - Weight=EmilyFrameworkGroup, 20
-            # 根据请求HEAD头断言
+            # 根据请求Method断言
             - Method=POST,GET
             # 根据请求参数断言，请求参数在路径后拼接模式
             - Query=name,emily*
