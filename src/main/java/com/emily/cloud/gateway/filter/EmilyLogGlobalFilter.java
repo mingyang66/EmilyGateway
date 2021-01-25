@@ -48,7 +48,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
     /**
      * 日志实体对象
      */
-    private String EMILY_LOG_ENTITY = "EMILY_LOG_ENTITY";
+    public static final String EMILY_LOG_ENTITY = "EMILY_LOG_ENTITY";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

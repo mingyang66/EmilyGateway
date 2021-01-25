@@ -1,5 +1,6 @@
 package com.emily.cloud.gateway.entity;
 
+import com.emily.cloud.gateway.filter.EmilyRequestGlobalFilter;
 import com.emily.cloud.gateway.utils.enums.DateFormatEnum;
 import com.emily.cloud.gateway.utils.enums.TraceType;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -77,7 +78,8 @@ public class LogEntity implements Serializable {
         ServerHttpRequest request = exchange.getRequest();
         this.setcId(request.getId());
         this.setMethod(request.getMethodValue());
-        this.setParams(getRequestParams(exchange));
+        //this.setParams(getRequestParams(exchange));
+        this.setParams(exchange.getAttribute(EmilyRequestGlobalFilter.EMILY_REQUEST_PARAM));
         this.setRequestDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         this.setContentType(request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType())));
         this.setProtocol(request.getURI().getScheme());
