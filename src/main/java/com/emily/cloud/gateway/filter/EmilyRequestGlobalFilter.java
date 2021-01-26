@@ -39,7 +39,7 @@ public class EmilyRequestGlobalFilter implements GlobalFilter, Ordered {
     /**
      * 请求参数
      */
-    public static final String EMILY_REQUEST_PARAM = "EMILY_REQUEST_PARAM";
+    public static final String EMILY_REQUEST_BODY = "EMILY_REQUEST_BODY";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -57,9 +57,9 @@ public class EmilyRequestGlobalFilter implements GlobalFilter, Ordered {
                 String bodyString = new String(content, StandardCharsets.UTF_8);
                 //将请求参数放入网关上下文属性配置
                 if (request.getHeaders().getContentType() != null && request.getHeaders().getContentType().includes(MediaType.APPLICATION_JSON)) {
-                    exchange.getAttributes().put(EMILY_REQUEST_PARAM, JSONUtils.toJavaBean(bodyString, Map.class));
+                    exchange.getAttributes().put(EMILY_REQUEST_BODY, JSONUtils.toJavaBean(bodyString, Map.class));
                 } else {
-                    exchange.getAttributes().put(EMILY_REQUEST_PARAM, bodyString);
+                    exchange.getAttributes().put(EMILY_REQUEST_BODY, bodyString);
                 }
                 return chain.filter(exchange.mutate().request(new ServerHttpRequestDecorator(request) {
                     @Override
@@ -68,8 +68,6 @@ public class EmilyRequestGlobalFilter implements GlobalFilter, Ordered {
                     }
                 }).build());
             });
-        //将请求参数放入网关上下文属性配置
-        exchange.getAttributes().put(EMILY_REQUEST_PARAM, request.getQueryParams());
         return chain.filter(exchange);
     }
 

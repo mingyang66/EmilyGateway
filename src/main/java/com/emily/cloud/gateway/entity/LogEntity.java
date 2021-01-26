@@ -3,8 +3,6 @@ package com.emily.cloud.gateway.entity;
 import com.emily.cloud.gateway.filter.EmilyRequestGlobalFilter;
 import com.emily.cloud.gateway.utils.enums.DateFormatEnum;
 import com.emily.cloud.gateway.utils.enums.TraceType;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
@@ -14,8 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.UUID;
-
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * @program: EmilyGateway
@@ -78,24 +74,10 @@ public class LogEntity implements Serializable {
         ServerHttpRequest request = exchange.getRequest();
         this.setcId(request.getId());
         this.setMethod(request.getMethodValue());
-        //this.setParams(getRequestParams(exchange));
-        this.setParams(exchange.getAttribute(EmilyRequestGlobalFilter.EMILY_REQUEST_PARAM));
+        this.setParams(exchange.getAttribute(EmilyRequestGlobalFilter.EMILY_REQUEST_BODY));
         this.setRequestDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         this.setContentType(request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType())));
         this.setProtocol(request.getURI().getScheme());
-    }
-    /**
-     * 获取请求参数
-     * @param exchange 网关上下文
-     */
-    protected Object getRequestParams(ServerWebExchange exchange){
-        String bodyString = null;
-        ServerHttpRequest request = exchange.getRequest();
-        if (request.getMethod() == HttpMethod.POST) {
-            DataBuffer body = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
-            bodyString = com.emily.cloud.gateway.utils.DataBufferUtils.dataBufferToString(body);
-        }
-        return bodyString;
     }
 
     public String getTraceId() {
