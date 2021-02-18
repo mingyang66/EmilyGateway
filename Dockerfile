@@ -1,7 +1,10 @@
+#定制镜像所需的基础镜像
 FROM openjdk:8-jdk-alpine
-#VOLUME /tmp
+#工作目录路径
 WORKDIR /app
-# ARG即pom文件中指定的参数 -- buildArgs
-ARG JAR_FILE
-ADD ${JAR_FILE} emilygateway.jar
+#构建参数
+ARG JAR_FILE=target/*.jar
+#复制指令，从上下文目录中复制文件或目录到容器里指定路径
+COPY ${JAR_FILE} emilygateway.jar
+#运行程序指令
 ENTRYPOINT ["java","-jar","emilygateway.jar"]
