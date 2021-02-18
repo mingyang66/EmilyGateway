@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.emily.cloud</groupId>
-    <artifactId>spring.cloud-gateway</artifactId>
+    <artifactId>emilygateway</artifactId>
     <version>1.0.1</version>
     <name>EmilyGateway</name>
     <description>Emily网关</description>
@@ -66,16 +66,16 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.11</version>
         </dependency>
-        <dependency>
+ <!--       <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
             <version>3.0.0</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+<!--        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-sleuth-zipkin</artifactId>
             <version>3.0.0</version>
-        </dependency>
+        </dependency>-->
         <!--高速缓存-->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
@@ -83,11 +83,11 @@
             <version>2.8.8</version>
         </dependency>
         <!--熔断降级-->
-        <dependency>
+       <!-- <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
             <version>2.0.0</version>
-        </dependency>
+        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
@@ -99,6 +99,7 @@
     </dependencies>
 
     <build>
+        <finalName>emilygateway</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -125,6 +126,24 @@
                         <nonFilteredFileExtension>pfx</nonFilteredFileExtension>
                         <nonFilteredFileExtension>jkx</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <configuration>
+                    <!-- 代表打包后得到的镜像名称 -->
+                    <repository>${project.artifactId}</repository>
+                    <!--
+                    是Dockerfile中引用到的参数，其中ARG即pom文件中指定的参数；
+                    VOLUME表示在镜像的目录中创建一个/tmp的文件目录，这一步是可选的，如果需要一些文件操作，建议通过这个参数指定文件目录供程序使用
+                    1. mvn package
+                    2. mvn install dockerfile:build
+                    -->
+                    <buildArgs>
+                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
                 </configuration>
             </plugin>
         </plugins>
