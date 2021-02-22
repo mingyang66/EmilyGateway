@@ -38,7 +38,7 @@ springcloud网关
   --restart=always \
   --privileged=true \
   -itd --name emilygateway \
--p 80:80 \
+  -p 80:80 \
   -p 443:443 \
   -p 7743:7743 \
   -v /Users/yaomingyang/Documents/logs:/app/logs \

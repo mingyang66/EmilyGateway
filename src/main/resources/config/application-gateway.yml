@@ -3,7 +3,7 @@ spring:
     gateway:
       loadbalancer:
         # 负载均衡503服务不可用时将状态码更换为404，默认：false
-        use404: true
+        use404: false
         #set-status:
         # 结合SetStatus过滤器，将原始返回的状态码放入指定的响应header
         #original-status-header-name: original-http-status
@@ -47,7 +47,7 @@ spring:
             # 根据路由断言请求的目标服务器
             - Path=/api/**
             # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
-            - Weight=EmilyFrameworkGroup, 80
+            #- Weight=EmilyFrameworkGroup, 50
             # 根据请求Host断言
             - Host=172.30.67.**
             # 根据请求头断言
@@ -62,9 +62,9 @@ spring:
             # 添加指定前缀过滤器
             - PrefixPath=/api
             # 在发送请求之前，所有请求添加参数
-            - AddRequestParameter=name,emily
+            #- AddRequestParameter=name,emily
             # 添加多个参数过滤器
-            - AddRequestParameter=age,1
+            #- AddRequestParameter=age,1
             # 添加请求Header过滤器
             - AddRequestHeader=token,emily-token-request
             # 添加响应Header过滤器
@@ -74,7 +74,7 @@ spring:
             # 删除响应参数过滤器
             - RemoveResponseHeader=token
             # 删除请求参数过滤器
-            - RemoveRequestParameter=age
+            #- RemoveRequestParameter=age,name
             # 无论哪种情况，响应的HTTP状态都设置为指定值，必须为HttpStatus中指定
             #- SetStatus=401
             # 添加请求头（或者修改）
@@ -82,7 +82,7 @@ spring:
             # 替换指定的Header（或者添加）过滤器
             - SetResponseHeader=X-Response-Red, Blue
             # 指定覆盖请求Header Host的值过滤器
-            - SetRequestHostHeader=xxx.org
+            #- SetRequestHostHeader=xxx.org
             # 设置重定向地址url
             #- RedirectTo=200, http://www.baidu.com
             # 请求大小限制过滤器，默认是：5MB
@@ -146,14 +146,20 @@ spring:
             - name: Retry
               args:
                 #应尝试重试的次数
-                retries: 3
-                # 应该重试的Http状态码，使用{@link org.springframework.http.HttpStatus}
-                statuses: BAD_GATEWAY
+                retries: 4
                 # 应该重试的HTTP方法，用{@link org.springframework.http.HttpMethod}，默认：GET
                 methods: GET,POST
+                # 应该重试的Http状态码，使用{@link org.springframework.http.HttpStatus}
+                statuses:
+                  #- INTERNAL_SERVER_ERROR
                 # 状态码配置，符合末端状态码才会进行重试逻辑，默认值是5(SERVER_ERROR)也就是5XX开头的状态码，
                 # 参考{@link org.springframework.http.HttpStatus.Series}
-                series: SERVER_ERROR
+                series:
+                  - INFORMATIONAL
+                  #- SUCCESSFUL
+                  - REDIRECTION
+                  #- CLIENT_ERROR
+                  - SERVER_ERROR
                 # 抛出如下列表中的异常将会进行重试，默认是：IOException、TimeoutException
                 exceptions:
                   - java.io.IOException
@@ -179,18 +185,30 @@ spring:
           # 断言，路由条件，
           predicates:
             - Path=/api/**
-            - Weight=EmilyFrameworkGroup, 20
+            # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
+            #- Weight=EmilyFrameworkGroup, 50
+            # 根据请求Host断言
+            - Host=172.30.67.**
             # 根据请求Method断言
             - Method=POST,GET
             # 根据请求参数断言，请求参数在路径后拼接模式
-            - Query=name,emily*
+            #- Query=name,emily*
           filters:
+            # 删除前缀过滤器
+            - StripPrefix=1
+            # 添加指定前缀过滤器
+            - PrefixPath=/api
             - name: Retry
               args:
                 retries: 3
-                statuses: BAD_GATEWAY
                 methods: GET,POST
-                series: SERVER_ERROR
+                statuses: INTERNAL_SERVER_ERROR
+                series:
+                  - SERVER_ERROR
+                # 抛出如下列表中的异常将会进行重试，默认是：IOException、TimeoutException
+                exceptions:
+                  - java.lang.Exception
+                  - org.springframework.cloud.gateway.support.TimeoutException
                 backoff:
                   firstBackoff: 10ms
                   maxBackoff: 50ms
