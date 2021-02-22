@@ -33,8 +33,8 @@ public class EmilyRetryGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return chain.filter(exchange).doFinally(signalType -> {
             // 获取接口重试次数
-            int iteration = exchange.getAttributeOrDefault(RETRY_ITERATION_KEY, -1);
-            if (iteration > -1) {
+            int iteration = exchange.getAttributeOrDefault(RETRY_ITERATION_KEY, 0);
+            if (iteration > 0) {
                 LogEntity logEntity = exchange.getAttributeOrDefault(EmilyLogGlobalFilter.EMILY_LOG_ENTITY, new LogEntity());
                 // 设置请求URL
                 URI uri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
