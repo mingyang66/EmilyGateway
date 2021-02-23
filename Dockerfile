@@ -1,7 +1,7 @@
-#作者
-MAINTAINER Emily
 #定制镜像所需的基础镜像
 FROM openjdk:8-jdk-alpine
+#作者
+MAINTAINER Emily
 #工作目录路径
 WORKDIR /app
 #构建参数

@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.emily.cloud</groupId>
     <artifactId>emilygateway</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>EmilyGateway</name>
     <description>Emily网关</description>
 

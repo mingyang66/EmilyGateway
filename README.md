@@ -29,7 +29,7 @@ springcloud网关
   # -f:指定要使用的Dockerfile路径
   # -t:镜像的名字及标签，通常是name:tag或name格式
   # .代表本次执行的上下文路径
-  docker build -f ./Dockerfile . -t emilygateway:1.0.1
+  docker build -f ./Dockerfile . -t emilygateway:1.0.2
   # 运行构建的镜像
   docker run \
   -e JAVA_ACL_TOKEN=03259e78-848c-3ea8-c0f6-524279d52929 \
@@ -42,7 +42,7 @@ springcloud网关
   -p 443:443 \
   -p 7743:7743 \
   -v /Users/yaomingyang/Documents/logs:/app/logs \
-  emilygateway:1.0.1
+  emilygateway:1.0.2
   ```
   
   登录Docker Registry
