@@ -45,7 +45,7 @@ spring:
           # 断言，路由条件，
           predicates:
             # 根据路由断言请求的目标服务器
-            - Path=/api/**
+            - Path=/emily/api/**
             # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
             #- Weight=EmilyFrameworkGroup, 50
             # 根据请求Host断言
@@ -60,7 +60,7 @@ spring:
             # 删除前缀过滤器
             - StripPrefix=1
             # 添加指定前缀过滤器
-            - PrefixPath=/api
+            #- PrefixPath=/api
             # 在发送请求之前，所有请求添加参数
             #- AddRequestParameter=name,emily
             # 添加多个参数过滤器
@@ -219,10 +219,25 @@ spring:
             connect-timeout: 1000
             # 响应超时时间，单位：毫秒
             response-timeout: 5000
-        - id: tradeApi
-          uri: lb://EMIS-Data-Docker-DataCenter
-          order: 0
+        # RabbitMQ服务配置
+        - id: rabbitmq2
+          uri: http://172.30.67.122:15672
           predicates:
-            - Path=/tradeApi/**
+            - Path=/rabbitmq/**
+            - Weight=rabbitmqGroup, 40
+          filters:
+            - StripPrefix=1
+        - id: rabbitmq3
+          uri: http://172.30.67.122:15673
+          predicates:
+            - Path=/rabbitmq/**
+            - Weight=rabbitmqGroup, 30
+          filters:
+            - StripPrefix=1
+        - id: rabbitmq4
+          uri: http://172.30.67.122:15674
+          predicates:
+            - Path=/rabbitmq/**
+            - Weight=rabbitmqGroup, 30
           filters:
             - StripPrefix=1
