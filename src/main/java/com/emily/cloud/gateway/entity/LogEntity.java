@@ -47,7 +47,7 @@ public class LogEntity implements Serializable {
     /**
      * 协议
      */
-    private String protocol;
+    private String schema;
     /**
      * 请求URL
      */
@@ -61,17 +61,13 @@ public class LogEntity implements Serializable {
      */
     private Object data;
     /**
-     * 响应数据类型
-     */
-    private String responseContentType;
-    /**
      * 请求时间
      */
-    private String requestDate;
+    private String startDate;
     /**
      * 响应时间
      */
-    private String responseDate;
+    private String endDate;
 
     public LogEntity() {
     }
@@ -86,9 +82,9 @@ public class LogEntity implements Serializable {
         } else {
             this.setParams(dataBuffer == null ? null : dataBuffer.toString(StandardCharsets.UTF_8));
         }
-        this.setRequestDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
+        this.setStartDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         this.setContentType(request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType())));
-        this.setProtocol(request.getURI().getScheme());
+        this.setSchema(request.getURI().getScheme());
     }
 
     public String getTraceId() {
@@ -139,20 +135,20 @@ public class LogEntity implements Serializable {
         this.data = data;
     }
 
-    public String getRequestDate() {
-        return requestDate;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setRequestDate(String requestDate) {
-        this.requestDate = requestDate;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public String getResponseDate() {
-        return responseDate;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setResponseDate(String responseDate) {
-        this.responseDate = responseDate;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public String getContentType() {
@@ -163,14 +159,6 @@ public class LogEntity implements Serializable {
         this.contentType = contentType;
     }
 
-    public String getResponseContentType() {
-        return responseContentType;
-    }
-
-    public void setResponseContentType(String responseContentType) {
-        this.responseContentType = responseContentType;
-    }
-
     public TraceType getTraceType() {
         return traceType;
     }
@@ -179,11 +167,11 @@ public class LogEntity implements Serializable {
         this.traceType = traceType;
     }
 
-    public String getProtocol() {
-        return protocol;
+    public String getSchema() {
+        return schema;
     }
 
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 }

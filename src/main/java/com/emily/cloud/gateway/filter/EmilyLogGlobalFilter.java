@@ -24,7 +24,6 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -70,11 +69,9 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置请求URL
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
         // 设置响应时间
-        logEntity.setResponseDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
+        logEntity.setEndDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         // 响应数据类型
         MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
-        // 设置响应数据类型
-        logEntity.setResponseContentType(mediaType == null ? null : MediaType.toString(Arrays.asList(mediaType)));
         // 设置返回的错误信息
         logEntity.setData(throwable.getMessage());
         // 记录日志信息
@@ -92,11 +89,9 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置请求URL
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
         // 设置响应时间
-        logEntity.setResponseDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
+        logEntity.setEndDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         // 响应数据类型
         MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
-        // 设置响应数据类型
-        logEntity.setResponseContentType(mediaType == null ? null : MediaType.toString(Arrays.asList(mediaType)));
         // 记录日志信息
         logger.info(JSONUtils.toJSONString(logEntity));
         return Mono.empty();

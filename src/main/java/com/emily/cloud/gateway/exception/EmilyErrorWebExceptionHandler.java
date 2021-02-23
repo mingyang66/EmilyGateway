@@ -8,9 +8,7 @@ import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWeb
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -85,25 +83,8 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
 
     @Override
     public void logError(ServerRequest request, ServerResponse response, Throwable throwable) {
-        if (logger.isDebugEnabled()) {
-            logger.debug(request.exchange().getLogPrefix() + this.formatError(throwable, request));
-        }
-
-        if (HttpStatus.resolve(response.rawStatusCode()) != null && response.statusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
-            //logger.error(String.format("%s 500 Server Error for %s", request.exchange().getLogPrefix(), this.formatRequest(request)));
-            logger.error(PrintExceptionInfo.printErrorInfo(throwable.getSuppressed()));
-        }
-
+        String message = throwable.getMessage();
+        logger.error(org.apache.commons.lang3.StringUtils.join(message, "\n\r", PrintExceptionInfo.printErrorInfo(throwable), "\n\r", PrintExceptionInfo.printErrorInfo(throwable.getSuppressed())));
     }
 
-    private String formatError(Throwable ex, ServerRequest request) {
-        String reason = ex.getClass().getSimpleName() + ": " + ex.getMessage();
-        return "Resolved [" + reason + "] for HTTP " + request.methodName() + " " + request.path();
-    }
-
-    private String formatRequest(ServerRequest request) {
-        String rawQuery = request.uri().getRawQuery();
-        String query = StringUtils.hasText(rawQuery) ? "?" + rawQuery : "";
-        return "HTTP " + request.methodName() + " \"" + request.path() + query + "\"";
-    }
 }
