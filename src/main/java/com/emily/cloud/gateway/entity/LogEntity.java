@@ -4,6 +4,7 @@ import com.emily.cloud.gateway.utils.JSONUtils;
 import com.emily.cloud.gateway.utils.enums.DateFormatEnum;
 import com.emily.cloud.gateway.utils.enums.TraceType;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
@@ -55,7 +56,11 @@ public class LogEntity implements Serializable {
     /**
      * 请求参数
      */
-    private Object params;
+    private Object requestBody;
+    /**
+     * 请求header
+     */
+    private HttpHeaders headers;
     /**
      * 响应数据
      */
@@ -78,13 +83,14 @@ public class LogEntity implements Serializable {
         this.setMethod(request.getMethodValue());
         DataBuffer dataBuffer = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
         if (request.getHeaders().getContentType() != null && request.getHeaders().getContentType().includes(MediaType.APPLICATION_JSON)) {
-            this.setParams(dataBuffer == null ? null : JSONUtils.toJavaBean(dataBuffer.toString(StandardCharsets.UTF_8), Map.class));
+            this.setRequestBody(dataBuffer == null ? null : JSONUtils.toJavaBean(dataBuffer.toString(StandardCharsets.UTF_8), Map.class));
         } else {
-            this.setParams(dataBuffer == null ? null : dataBuffer.toString(StandardCharsets.UTF_8));
+            this.setRequestBody(dataBuffer == null ? null : dataBuffer.toString(StandardCharsets.UTF_8));
         }
         this.setStartDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         this.setContentType(request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType())));
         this.setSchema(request.getURI().getScheme());
+        this.setHeaders(request.getHeaders());
     }
 
     public String getTraceId() {
@@ -119,12 +125,12 @@ public class LogEntity implements Serializable {
         this.url = url;
     }
 
-    public Object getParams() {
-        return params;
+    public Object getRequestBody() {
+        return requestBody;
     }
 
-    public void setParams(Object params) {
-        this.params = params;
+    public void setRequestBody(Object requestBody) {
+        this.requestBody = requestBody;
     }
 
     public Object getData() {
@@ -173,5 +179,13 @@ public class LogEntity implements Serializable {
 
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+
+    public HttpHeaders getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(HttpHeaders headers) {
+        this.headers = headers;
     }
 }

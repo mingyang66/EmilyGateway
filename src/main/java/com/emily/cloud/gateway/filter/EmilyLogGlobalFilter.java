@@ -70,8 +70,6 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
         // 设置响应时间
         logEntity.setEndDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
-        // 响应数据类型
-        MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
         // 设置返回的错误信息
         logEntity.setData(throwable.getMessage());
         // 记录日志信息
@@ -90,8 +88,6 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
         // 设置响应时间
         logEntity.setEndDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
-        // 响应数据类型
-        MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
         // 记录日志信息
         logger.info(JSONUtils.toJSONString(logEntity));
         return Mono.empty();

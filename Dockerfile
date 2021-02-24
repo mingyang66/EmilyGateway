@@ -9,4 +9,4 @@ ARG JAR_FILE=target/*.jar
 #复制指令，从上下文目录中复制文件或目录到容器里指定路径
 COPY ${JAR_FILE} emilygateway.jar
 #运行程序指令
-ENTRYPOINT ["java","-jar","emilygateway.jar"]
+ENTRYPOINT ["java", "-Dreactor.netty.pool.leasingStrategy=lifo","-jar","emilygateway.jar"]

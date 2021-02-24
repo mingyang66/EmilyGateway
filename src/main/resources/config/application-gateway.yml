@@ -8,10 +8,10 @@ spring:
         # 结合SetStatus过滤器，将原始返回的状态码放入指定的响应header
         #original-status-header-name: original-http-status
       httpclient:
-        # 连接超时，单位毫秒
-        connect-timeout: 1000
+        # 连接超时，单位毫秒，默认：45s
+        connect-timeout: 45000
         # 响应超时时间，{@link java.time.Duration}类型
-        response-timeout: '3s'
+        response-timeout: PT30S
         # 最大响应头大小，默认:8192，单位：字节B
         max-header-size: 8192
         # 最大初始行大小，单位：字节B
@@ -21,6 +21,8 @@ spring:
           name: proxy
           # HttpClient要使用的池的类型，默认：elastic
           type: elastic
+          # 空闲请求在空闲多久后会被回收，默认：毫秒  -Dreactor.netty.pool.leasingStrategy=lifo
+          max-idle-time: PT1S
         ssl:
           # 信任下游的所有证书TLS, 默认：false
           use-insecure-trust-manager: true
