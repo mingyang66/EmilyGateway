@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 /**
  * @program: EmilyGateway
@@ -50,14 +51,16 @@ public class NettyWebServerAutoConfiguration {
                 return response.setComplete();
             }));
         } else {
-            factory.getWebServer(httpHandler);
+            webServer = factory.getWebServer(httpHandler);
         }
         webServer.start();
     }
 
     @PreDestroy
     public void stop() {
-        webServer.stop();
+        if (Objects.nonNull(webServer)) {
+            webServer.stop();
+        }
     }
 
 }

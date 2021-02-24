@@ -22,6 +22,8 @@ server:
     port: 80
     # 优雅停机
     shutdown: graceful
+    # http请求是否自动跳转到https
+    http-to-https: true
 management:
   server:
     port: 7443
