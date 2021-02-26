@@ -21,6 +21,10 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
         <dependency>
@@ -102,7 +106,13 @@
         <finalName>emilygateway</finalName>
         <resources>
             <resource>
+                <!--指定资源文件的位置-->
                 <directory>src/main/resources</directory>
+                <!--
+                默认为false
+                true,开启过滤，替换directory下的资源文件中的参数（eg.${name}或@xx@}），会把过滤的文件打到classpath下
+                false,不过滤不会进行占位符替换，会把不需要过滤的文件打到classpath下
+                -->
                 <filtering>true</filtering>
             </resource>
         </resources>
