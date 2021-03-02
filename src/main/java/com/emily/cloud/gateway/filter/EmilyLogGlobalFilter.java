@@ -168,11 +168,14 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         if ((mediaType.includes(MediaType.APPLICATION_JSON)
                 || mediaType.includes(MediaType.APPLICATION_JSON_UTF8))
                 && StringUtils.isNotEmpty(body)) {
-            if (StringUtils.startsWith(body, "[")) {
-                return JSONUtils.toJavaBean(body, new TypeReference<List<Map<Object, Object>>>() {
-                });
+            try {
+                if (StringUtils.startsWith(body, "[")) {
+                    return JSONUtils.toJavaBean(body, new TypeReference<List<Map<Object, Object>>>() {
+                    });
+                }
+                return JSONUtils.toJavaBean(body, Map.class);
+            } catch (Exception e){
             }
-            return JSONUtils.toJavaBean(body, Map.class);
         }
         return body;
     }

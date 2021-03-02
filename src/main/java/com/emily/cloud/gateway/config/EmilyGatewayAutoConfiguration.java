@@ -3,10 +3,16 @@ package com.emily.cloud.gateway.config;
 import com.emily.cloud.gateway.filter.EmilyLogGlobalFilter;
 import com.emily.cloud.gateway.filter.EmilyRetryGlobalFilter;
 import com.emily.cloud.gateway.filter.ratelimit.IpAddressKeyResolver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.config.GatewayProperties;
+import org.springframework.cloud.gateway.event.EnableBodyCachingEvent;
+import org.springframework.cloud.gateway.filter.AdaptCachedBodyGlobalFilter;
 import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
 import org.springframework.cloud.gateway.filter.ReactiveLoadBalancerClientFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @program: EmilyGateway
@@ -15,6 +21,22 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration(proxyBeanMethods = false)
 public class EmilyGatewayAutoConfiguration {
+
+    @Autowired
+    private AdaptCachedBodyGlobalFilter adaptCachedBodyGlobalFilter;
+    @Autowired
+    private GatewayProperties gatewayProperties;
+
+    /**
+     * 让所有请求的body都做body cache
+     */
+    @PostConstruct
+    public void init() {
+        gatewayProperties.getRoutes().forEach(routeDefinition -> {
+            adaptCachedBodyGlobalFilter.onApplicationEvent(new EnableBodyCachingEvent(this, routeDefinition.getId()));
+        });
+    }
+
     /**
      * 注册请求响应日志拦截全局过滤器
      */

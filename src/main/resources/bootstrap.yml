@@ -54,6 +54,10 @@ spring:
   profiles:
     # 指定包含哪些配置文件
     include: gateway
+  emily:
+    accesslog:
+      # 开启日志组件
+      enable: true
 
 ---
 spring:
