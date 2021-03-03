@@ -5,11 +5,10 @@ import com.emily.cloud.gateway.utils.DataBufferUtils;
 import com.emily.framework.common.enums.DateFormatEnum;
 import com.emily.framework.common.utils.calculation.GZIPUtils;
 import com.emily.framework.common.utils.json.JSONUtils;
+import com.emily.framework.common.utils.log.LoggerUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -37,8 +36,6 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 @SuppressWarnings("all")
 public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
 
-    private static Logger logger = LoggerFactory.getLogger(EmilyLogGlobalFilter.class);
-
     /**
      * 优先级顺序
      */
@@ -58,7 +55,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
                 // 当Mono完成并出现错误时触发，将会发送onError信号
                 .doOnError(throwable -> doLogError(exchange, throwable))
                 // 以任何理由终止的信号类型将会传递给此消费者
-                .doFinally(signalType -> logger.info("信号类型："+signalType));
+                .doFinally(signalType -> LoggerUtils.info(EmilyLogGlobalFilter.class, "信号类型："+signalType));
     }
 
     /**
@@ -73,7 +70,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置返回的错误信息
         logEntity.setData(throwable.getMessage());
         // 记录日志信息
-        logger.error(JSONUtils.toJSONString(logEntity));
+        LoggerUtils.error(EmilyLogGlobalFilter.class, JSONUtils.toJSONString(logEntity));
     }
 
     /**
@@ -89,7 +86,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置响应时间
         logEntity.setEndDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         // 记录日志信息
-        logger.info(JSONUtils.toJSONString(logEntity));
+        LoggerUtils.info(EmilyLogGlobalFilter.class, JSONUtils.toJSONString(logEntity));
         return Mono.empty();
     }
 

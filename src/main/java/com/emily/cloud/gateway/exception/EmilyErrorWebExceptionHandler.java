@@ -1,7 +1,6 @@
 package com.emily.cloud.gateway.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.emily.framework.common.utils.log.LoggerUtils;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
@@ -24,7 +23,6 @@ import static org.springframework.cloud.gateway.filter.factory.RetryGatewayFilte
  */
 public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(EmilyErrorWebExceptionHandler.class);
     private final ErrorAttributes errorAttributes;
 
     public EmilyErrorWebExceptionHandler(ErrorAttributes errorAttributes, WebProperties.Resources resources, ErrorProperties errorProperties, ApplicationContext applicationContext) {
@@ -84,7 +82,7 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
     @Override
     public void logError(ServerRequest request, ServerResponse response, Throwable throwable) {
         String message = throwable.getMessage();
-        logger.error(org.apache.commons.lang3.StringUtils.join(message, "\n\r", PrintExceptionInfo.printErrorInfo(throwable), "\n\r", PrintExceptionInfo.printErrorInfo(throwable.getSuppressed())));
+        LoggerUtils.error(EmilyErrorWebExceptionHandler.class, org.apache.commons.lang3.StringUtils.join(message, "\n\r", PrintExceptionInfo.printErrorInfo(throwable), "\n\r", PrintExceptionInfo.printErrorInfo(throwable.getSuppressed())));
     }
 
 }

@@ -15,7 +15,6 @@ public class EmilyRequestBodyPredicate  implements Predicate {
      */
     @Override
     public boolean test(Object o) {
-        System.out.println("------参数内容："+o);
         return true;
     }
 }
