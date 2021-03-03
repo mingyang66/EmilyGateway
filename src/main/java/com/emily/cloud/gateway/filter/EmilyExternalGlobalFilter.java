@@ -1,6 +1,7 @@
 package com.emily.cloud.gateway.filter;
 
 import com.emily.cloud.gateway.config.EmilyGatewayProperties;
+import com.emily.framework.common.enums.AppHttpStatus;
 import com.emily.framework.common.exception.BusinessException;
 import com.emily.framework.common.utils.RequestUtils;
 import com.emily.framework.common.utils.path.PathMatcher;
@@ -36,7 +37,7 @@ public class EmilyExternalGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if (determineExternalLimit(exchange)) {
-            throw new BusinessException(500, "非法请求");
+            throw new BusinessException(AppHttpStatus.SERVER_IIIEGAL_ACCESS);
         }
         return chain.filter(exchange);
     }
