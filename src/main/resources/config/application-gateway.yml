@@ -243,6 +243,7 @@ spring:
             - Weight=rabbitmqGroup, 30
           filters:
             - StripPrefix=1
+        # Consul服务配置
         - id: consul
           uri: http://172.30.67.122:8500
           predicates:

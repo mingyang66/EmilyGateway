@@ -17,7 +17,6 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 /**
  * @program: EmilyGateway
  * @description: Retry And Repeat Filter
- * @author: 姚明洋
  * @create: 2021/02/22
  */
 public class EmilyRetryGlobalFilter implements GlobalFilter, Ordered {

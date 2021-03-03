@@ -1,5 +1,6 @@
 package com.emily.cloud.gateway.exception;
 
+import com.emily.framework.common.exception.BusinessException;
 import com.emily.framework.common.utils.log.LoggerUtils;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
@@ -12,6 +13,7 @@ import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.springframework.cloud.gateway.filter.factory.RetryGatewayFilterFactory.RETRY_ITERATION_KEY;
@@ -42,7 +44,15 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
 
     @Override
     public Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
-        Map<String, Object> errorAttributes = this.errorAttributes.getErrorAttributes(request, options.isIncluded(ErrorAttributeOptions.Include.STACK_TRACE));
+        Map<String, Object> errorAttributes;
+        Throwable error = this.getError(request);
+        if (error != null && (error instanceof BusinessException)) {
+            errorAttributes = new LinkedHashMap<>();
+            errorAttributes.put("status", ((BusinessException) error).getStatus());
+            errorAttributes.put("messages", ((BusinessException) error).getErrorMessage());
+            return errorAttributes;
+        }
+        errorAttributes = this.errorAttributes.getErrorAttributes(request, options.isIncluded(ErrorAttributeOptions.Include.STACK_TRACE));
 
         if (!options.isIncluded(ErrorAttributeOptions.Include.EXCEPTION)) {
             errorAttributes.remove("exception");
@@ -65,9 +75,11 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
                 ",", errorAttributes.get("message"),
                 ",", errorAttributes.get("exception"),
                 ",", "重试次数：" + request.exchange().getAttributeOrDefault(RETRY_ITERATION_KEY, 0)));
+        System.out.println(errorAttributes.get("exception") instanceof BusinessException);
         errorAttributes.remove("exception");
         errorAttributes.remove("error");
         errorAttributes.remove("requestId");
+
         return errorAttributes;
     }
 
