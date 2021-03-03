@@ -1,7 +1,7 @@
 package com.emily.cloud.gateway.filter;
 
 import com.emily.cloud.gateway.entity.LogEntity;
-import com.emily.cloud.gateway.utils.JSONUtils;
+import com.emily.framework.common.utils.json.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;

@@ -1,8 +1,8 @@
 package com.emily.cloud.gateway.entity;
 
-import com.emily.cloud.gateway.utils.JSONUtils;
-import com.emily.cloud.gateway.utils.enums.DateFormatEnum;
 import com.emily.cloud.gateway.utils.enums.TraceType;
+import com.emily.framework.common.enums.DateFormatEnum;
+import com.emily.framework.common.utils.json.JSONUtils;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
