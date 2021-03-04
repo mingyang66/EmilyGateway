@@ -218,8 +218,11 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
             try {
                 return JSONUtils.toJavaBean(body, Map.class);
             } catch (Exception e) {
+            }
+            try {
                 return JSONUtils.toJavaBean(body, new TypeReference<List<Map<Object, Object>>>() {
                 });
+            } catch (Exception e) {
             }
         }
         return body;

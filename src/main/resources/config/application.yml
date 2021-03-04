@@ -78,9 +78,9 @@ spring:
           path: /rabbitmq/**
         - id: rabbitmq3
           path: /rabbitmq/**
-        - id: rabbitmq4
-          path: /rabbitmq/**
       # 指定对外部网络访问限制
       exclude-externel-routes:
         - id: rabbitmq2
+          path: /rabbitmq/**
+        - id: rabbitmq3
           path: /rabbitmq/**
