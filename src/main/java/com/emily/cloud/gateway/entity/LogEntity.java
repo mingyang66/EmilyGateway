@@ -82,9 +82,9 @@ public class LogEntity implements Serializable {
         this.setcId(request.getId());
         this.setMethod(request.getMethodValue());
         DataBuffer dataBuffer = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
-        if (request.getHeaders().getContentType() != null && request.getHeaders().getContentType().includes(MediaType.APPLICATION_JSON)) {
+        try {
             this.setRequestBody(dataBuffer == null ? null : JSONUtils.toJavaBean(dataBuffer.toString(StandardCharsets.UTF_8), Map.class));
-        } else {
+        } catch (Exception e) {
             this.setRequestBody(dataBuffer == null ? null : dataBuffer.toString(StandardCharsets.UTF_8));
         }
         this.setStartDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));

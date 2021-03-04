@@ -1,6 +1,7 @@
 package com.emily.cloud.gateway.exception;
 
 import com.emily.framework.common.exception.BusinessException;
+import com.emily.framework.common.exception.PrintExceptionInfo;
 import com.emily.framework.common.utils.log.LoggerUtils;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;

@@ -114,7 +114,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
     protected void doLogError(ServerWebExchange exchange, Throwable throwable) {
         LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
         // 设置请求URL
-        logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
+        logEntity.setUrl(exchange.getAttributes().containsKey(GATEWAY_REQUEST_URL_ATTR) ? exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString() : exchange.getRequest().getURI().toString());
         // 设置响应时间
         logEntity.setEndDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         // 设置返回的错误信息
@@ -216,12 +216,10 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
                 || mediaType.includes(MediaType.APPLICATION_JSON_UTF8))
                 && StringUtils.isNotEmpty(body)) {
             try {
-                if (StringUtils.startsWith(body, "[")) {
-                    return JSONUtils.toJavaBean(body, new TypeReference<List<Map<Object, Object>>>() {
-                    });
-                }
                 return JSONUtils.toJavaBean(body, Map.class);
             } catch (Exception e) {
+                return JSONUtils.toJavaBean(body, new TypeReference<List<Map<Object, Object>>>() {
+                });
             }
         }
         return body;

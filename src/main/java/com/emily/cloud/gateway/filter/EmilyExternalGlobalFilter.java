@@ -1,6 +1,7 @@
 package com.emily.cloud.gateway.filter;
 
 import com.emily.cloud.gateway.config.EmilyGatewayProperties;
+import com.emily.cloud.gateway.utils.HttpUtils;
 import com.emily.framework.common.enums.AppHttpStatus;
 import com.emily.framework.common.exception.BusinessException;
 import com.emily.framework.common.utils.RequestUtils;
@@ -49,13 +50,13 @@ public class EmilyExternalGlobalFilter implements GlobalFilter, Ordered {
      */
     protected boolean determineExternalLimit(ServerWebExchange exchange) {
         //判定是否是内网，内网不做限制
-        if(RequestUtils.isInternet(exchange.getRequest().getRemoteAddress().getHostString())){
+        if(RequestUtils.isInternet(HttpUtils.getIp(exchange.getRequest()))){
             return false;
         }
         //获取网关路由配置信息
         Route route = exchange.getAttribute(GATEWAY_ROUTE_ATTR);
         //获取请求路由
-        String path = exchange.getRequest().getPath().value();
+        String path = HttpUtils.getPath(exchange.getRequest());
         // 获取无需记录日志的路由配置信息
         EmilyGatewayProperties.External excludeExternelRoute = emilyGatewayProperties.getExcludeExternelRoute(route.getId());
         // 路由ID未配置，则不限制

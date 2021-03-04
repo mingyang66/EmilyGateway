@@ -3,14 +3,17 @@ package com.emily.cloud.gateway.config;
 import com.emily.cloud.gateway.filter.EmilyExternalGlobalFilter;
 import com.emily.cloud.gateway.filter.EmilyLogGlobalFilter;
 import com.emily.cloud.gateway.filter.EmilyRetryGlobalFilter;
+import com.emily.cloud.gateway.filter.factory.EmilyExternalGatewayFilterFactory;
 import com.emily.cloud.gateway.filter.ratelimit.IpAddressKeyResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.config.GatewayProperties;
+import org.springframework.cloud.gateway.config.conditional.ConditionalOnEnabledFilter;
 import org.springframework.cloud.gateway.event.EnableBodyCachingEvent;
 import org.springframework.cloud.gateway.filter.AdaptCachedBodyGlobalFilter;
 import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
 import org.springframework.cloud.gateway.filter.ReactiveLoadBalancerClientFilter;
+import org.springframework.cloud.gateway.filter.RouteToRequestUrlFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,12 +47,13 @@ public class EmilyGatewayAutoConfiguration {
      * 限制指定路由只能内网访问过滤器
      */
     @Bean
-    public EmilyExternalGlobalFilter emilyExternalGlobalFilter(EmilyGatewayProperties emilyGatewayProperties){
+    public EmilyExternalGlobalFilter emilyExternalGlobalFilter(EmilyGatewayProperties emilyGatewayProperties) {
         EmilyExternalGlobalFilter emilyExternalGlobalFilter = new EmilyExternalGlobalFilter(emilyGatewayProperties);
-        //设置优先级，优先级要在日志拦截器之前
-        emilyExternalGlobalFilter.setOrder(NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER - 2);
+        //将限制放在将路由转换到URL过滤器之后
+        emilyExternalGlobalFilter.setOrder(RouteToRequestUrlFilter.ROUTE_TO_URL_FILTER_ORDER +1);
         return emilyExternalGlobalFilter;
     }
+
     /**
      * 注册请求响应日志拦截全局过滤器
      */
@@ -71,6 +75,16 @@ public class EmilyGatewayAutoConfiguration {
         EmilyRetryGlobalFilter emilyRetryGlobalFilter = new EmilyRetryGlobalFilter();
         emilyRetryGlobalFilter.setOrder(ReactiveLoadBalancerClientFilter.LOAD_BALANCER_CLIENT_FILTER_ORDER - 1);
         return emilyRetryGlobalFilter;
+    }
+
+    /**
+     * 自定义私有限制外网访问过滤器
+     */
+    @Bean
+    @ConditionalOnEnabledFilter
+    public EmilyExternalGatewayFilterFactory emilyExternalGatewayFilterFactory() {
+        //将限制放在将路由转换到URL过滤器之后
+        return new EmilyExternalGatewayFilterFactory(RouteToRequestUrlFilter.ROUTE_TO_URL_FILTER_ORDER+2);
     }
 
     /**
