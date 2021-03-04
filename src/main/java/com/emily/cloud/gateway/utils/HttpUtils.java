@@ -6,11 +6,14 @@ import com.emily.framework.common.utils.json.JSONUtils;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.web.server.ServerWebExchange;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * @program: EmilyGateway
@@ -70,5 +73,20 @@ public class HttpUtils {
             throw new BusinessException(AppHttpStatus.ILLEGAL_ARGUMENT_EXCEPTION);
         }
         return request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType()));
+    }
+
+    /**
+     * 获取请求参数
+     */
+    public static Object getRequestBody(ServerWebExchange exchange) {
+        if (Objects.isNull(exchange)) {
+            throw new BusinessException(AppHttpStatus.ILLEGAL_ARGUMENT_EXCEPTION);
+        }
+        DataBuffer dataBuffer = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
+        try {
+            return dataBuffer == null ? null : JSONUtils.toJavaBean(dataBuffer.toString(StandardCharsets.UTF_8), Map.class);
+        } catch (Exception e) {
+            return dataBuffer == null ? null : dataBuffer.toString(StandardCharsets.UTF_8);
+        }
     }
 }

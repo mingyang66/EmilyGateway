@@ -3,22 +3,14 @@ package com.emily.cloud.gateway.entity;
 import com.emily.cloud.gateway.utils.HttpUtils;
 import com.emily.cloud.gateway.utils.enums.TraceType;
 import com.emily.framework.common.enums.DateFormatEnum;
-import com.emily.framework.common.utils.json.JSONUtils;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.UUID;
-
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 
 /**
  * @program: EmilyGateway
@@ -81,13 +73,8 @@ public class LogEntity implements Serializable {
     public LogEntity(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
         this.setcId(request.getId());
-        this.setMethod(request.getMethodValue());
-        DataBuffer dataBuffer = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);
-        try {
-            this.setRequestBody(dataBuffer == null ? null : JSONUtils.toJavaBean(dataBuffer.toString(StandardCharsets.UTF_8), Map.class));
-        } catch (Exception e) {
-            this.setRequestBody(dataBuffer == null ? null : dataBuffer.toString(StandardCharsets.UTF_8));
-        }
+        this.setMethod(HttpUtils.getMethod(request));
+        this.setRequestBody(HttpUtils.getRequestBody(exchange));
         this.setStartDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
         this.setContentType(HttpUtils.getContentType(request));
         this.setSchema(HttpUtils.getSchema(request));
