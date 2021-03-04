@@ -1,5 +1,6 @@
 package com.emily.cloud.gateway.entity;
 
+import com.emily.cloud.gateway.utils.HttpUtils;
 import com.emily.cloud.gateway.utils.enums.TraceType;
 import com.emily.framework.common.enums.DateFormatEnum;
 import com.emily.framework.common.utils.json.JSONUtils;
@@ -88,8 +89,8 @@ public class LogEntity implements Serializable {
             this.setRequestBody(dataBuffer == null ? null : dataBuffer.toString(StandardCharsets.UTF_8));
         }
         this.setStartDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
-        this.setContentType(request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType())));
-        this.setSchema(request.getURI().getScheme());
+        this.setContentType(HttpUtils.getContentType(request));
+        this.setSchema(HttpUtils.getSchema(request));
         this.setHeaders(request.getHeaders());
     }
 
