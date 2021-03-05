@@ -10,12 +10,13 @@
     </parent>
     <groupId>com.emily.cloud</groupId>
     <artifactId>emilygateway</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>EmilyGateway</name>
     <description>Emily网关</description>
 
     <properties>
         <java.version>1.8</java.version>
+        <spring.cloud.version>3.0.1</spring.cloud.version>
     </properties>
 
     <dependencies>
@@ -43,25 +44,25 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
-            <version>3.0.1</version>
+            <version>${spring.cloud.version}</version>
         </dependency>
         <!--consul-服务发现-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-consul-discovery</artifactId>
-            <version>3.0.1</version>
+            <version>${spring.cloud.version}</version>
         </dependency>
         <!--consul-配置中心-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-consul-config</artifactId>
-            <version>3.0.1</version>
+            <version>${spring.cloud.version}</version>
         </dependency>
         <!-- boostrap 标记启动类 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
-            <version>3.0.1</version>
+            <version>${spring.cloud.version}</version>
         </dependency>
 
         <dependency>
@@ -93,11 +94,11 @@
         </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-        <dependency>
+       <!-- <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.8.0</version>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
 
