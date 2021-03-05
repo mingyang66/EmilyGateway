@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
+import static com.emily.cloud.gateway.filter.EmilyLogGlobalFilter.EMILY_LOG_ENTITY;
 import static org.springframework.cloud.gateway.filter.factory.RetryGatewayFilterFactory.RETRY_ITERATION_KEY;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
@@ -32,7 +33,7 @@ public class EmilyRetryGlobalFilter implements GlobalFilter, Ordered {
             // 获取接口重试次数
             int iteration = exchange.getAttributeOrDefault(RETRY_ITERATION_KEY, 0);
             if (iteration > 0) {
-                LogEntity logEntity = exchange.getAttributeOrDefault(EmilyLogGlobalFilter.EMILY_LOG_ENTITY, new LogEntity());
+                LogEntity logEntity = exchange.getAttributeOrDefault(EMILY_LOG_ENTITY, new LogEntity());
                 // 设置请求URL
                 URI uri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
                 logEntity.setUrl(uri == null ? null : uri.toString());
