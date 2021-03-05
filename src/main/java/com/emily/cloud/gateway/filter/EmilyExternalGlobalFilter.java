@@ -55,8 +55,6 @@ public class EmilyExternalGlobalFilter implements GlobalFilter, Ordered {
         }
         //获取网关路由配置信息
         Route route = exchange.getAttribute(GATEWAY_ROUTE_ATTR);
-        //获取请求路由
-        String path = HttpUtils.getPath(exchange.getRequest());
         // 获取无需记录日志的路由配置信息
         EmilyGatewayProperties.External excludeExternelRoute = emilyGatewayProperties.getExcludeExternelRoute(route.getId());
         // 路由ID未配置，则不限制
@@ -71,6 +69,8 @@ public class EmilyExternalGlobalFilter implements GlobalFilter, Ordered {
          * Ant表达式匹配类
          */
         PathMatcher pathMatcher = new PathMatcher(excludeExternelRoute.getPath().toArray(new String[]{}));
+        //获取请求路由
+        String path = HttpUtils.getPath(exchange.getRequest());
         if (pathMatcher.match(path)) {
             return true;
         }

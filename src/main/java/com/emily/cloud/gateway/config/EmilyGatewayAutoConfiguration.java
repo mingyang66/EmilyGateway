@@ -3,6 +3,7 @@ package com.emily.cloud.gateway.config;
 import com.emily.cloud.gateway.filter.EmilyExternalGlobalFilter;
 import com.emily.cloud.gateway.filter.EmilyLogGlobalFilter;
 import com.emily.cloud.gateway.filter.EmilyRetryGlobalFilter;
+import com.emily.cloud.gateway.filter.EmilySchemaGlobalFilter;
 import com.emily.cloud.gateway.filter.factory.EmilyExternalGatewayFilterFactory;
 import com.emily.cloud.gateway.filter.ratelimit.IpAddressKeyResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,22 @@ public class EmilyGatewayAutoConfiguration {
     }
 
     /**
+     * 网关支持的协议过滤器
+     */
+    @Bean
+    public EmilySchemaGlobalFilter emilySchemaGlobalFilter(EmilyGatewayProperties emilyGatewayProperties){
+        EmilySchemaGlobalFilter emilySchemaGlobalFilter = new EmilySchemaGlobalFilter(emilyGatewayProperties);
+        emilySchemaGlobalFilter.setOrder(AdaptCachedBodyGlobalFilter.HIGHEST_PRECEDENCE+2000);
+        return emilySchemaGlobalFilter;
+    }
+    /**
      * 限制指定路由只能内网访问过滤器
      */
     @Bean
     public EmilyExternalGlobalFilter emilyExternalGlobalFilter(EmilyGatewayProperties emilyGatewayProperties) {
         EmilyExternalGlobalFilter emilyExternalGlobalFilter = new EmilyExternalGlobalFilter(emilyGatewayProperties);
         //将限制放在将路由转换到URL过滤器之后
-        emilyExternalGlobalFilter.setOrder(RouteToRequestUrlFilter.ROUTE_TO_URL_FILTER_ORDER +1);
+        emilyExternalGlobalFilter.setOrder(RouteToRequestUrlFilter.HIGHEST_PRECEDENCE + 3000);
         return emilyExternalGlobalFilter;
     }
 

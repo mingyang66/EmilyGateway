@@ -1,5 +1,6 @@
 package com.emily.cloud.gateway.config;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -24,7 +25,10 @@ public class EmilyGatewayProperties {
      * 外部网络访问限制
      */
     private List<External> excludeExternelRoutes = new ArrayList<>();
-
+    /**
+     * 网关支持哪些协议
+     */
+    private Set<String> includeSchemas = Sets.newHashSet("http", "https");
 
     /**
      * 获取指定路由 ID对应的内部网络限制配置
@@ -53,6 +57,14 @@ public class EmilyGatewayProperties {
 
     public List<Route> getExcludeLoggingRoutes() {
         return excludeLoggingRoutes;
+    }
+
+    public Set<String> getIncludeSchemas() {
+        return includeSchemas;
+    }
+
+    public void setIncludeSchemas(Set<String> includeSchemas) {
+        this.includeSchemas = includeSchemas;
     }
 
     /**

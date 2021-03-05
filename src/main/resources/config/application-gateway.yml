@@ -258,3 +258,9 @@ spring:
             connect-timeout: 60000
             # 响应超时时间，单位：毫秒
             response-timeout: 60000
+        - id: websocket
+          uri: wss://172.30.67.122:9000/websocket/connect
+          predicates:
+            - Path=/websocket/**
+          filters:
+            #- StripPrefix=1

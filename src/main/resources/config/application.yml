@@ -88,3 +88,5 @@ spring:
           path: /rabbitmq/**
         - id: rabbitmq4
           path: /rabbitmq/**
+      # 指定外部网络访问协议限制
+      include-schemas: http,https
