@@ -11,6 +11,7 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -47,10 +48,15 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
     public Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
         Map<String, Object> errorAttributes;
         Throwable error = this.getError(request);
-        if (error != null && (error instanceof BusinessException)) {
+        if (error != null) {
             errorAttributes = new LinkedHashMap<>();
-            errorAttributes.put("status", ((BusinessException) error).getStatus());
-            errorAttributes.put("messages", ((BusinessException) error).getErrorMessage());
+            if (error instanceof BusinessException) {
+                errorAttributes.put("status", ((BusinessException) error).getStatus());
+                errorAttributes.put("messages", ((BusinessException) error).getErrorMessage());
+            } else if(error instanceof ResponseStatusException){
+                errorAttributes.put("status", ((ResponseStatusException) error).getStatus().value());
+                errorAttributes.put("messages", ((ResponseStatusException) error).getStatus().getReasonPhrase());
+            }
             return errorAttributes;
         }
         errorAttributes = this.errorAttributes.getErrorAttributes(request, options.isIncluded(ErrorAttributeOptions.Include.STACK_TRACE));

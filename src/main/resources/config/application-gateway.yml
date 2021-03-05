@@ -47,7 +47,7 @@ spring:
           # 断言，路由条件，
           predicates:
             # 根据路由断言请求的目标服务器
-            - Path=/emily/api/**
+            - Path=/emilyframework/api/**
             # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
             #- Weight=EmilyFrameworkGroup, 50
             # 根据请求Host断言
