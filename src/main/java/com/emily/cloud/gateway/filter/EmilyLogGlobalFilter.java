@@ -67,6 +67,11 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         exchange.getAttributes().put(EMILY_LOG_ENTITY, new LogEntity(exchange));
+        /**
+         * 获取响应结果有两种方案：
+         * 1.就是如下自定义修饰类的方式获取响应结果
+         * 2.通过重写org.springframework.cloud.gateway.filter.factory.rewrite.ModifyResponseBodyGatewayFilterFactory.ModifiedServerHttpResponse修饰类的方式来实现
+         */
         return chain.filter(exchange.mutate().response(getServerHttpResponseDecorator(exchange)).build())
                 //如果Mono在没有数据的情况下完成，则要调用的回调参数为null
                 .doOnSuccess((args) -> doLogSuccess(exchange, args))
