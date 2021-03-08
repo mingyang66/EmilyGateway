@@ -1,6 +1,5 @@
 package com.emily.cloud.gateway.exception;
 
-import com.emily.framework.common.enums.AppHttpStatus;
 import com.emily.framework.common.exception.BusinessException;
 import com.emily.framework.common.exception.PrintExceptionInfo;
 import com.emily.framework.common.utils.log.LoggerUtils;
@@ -61,10 +60,6 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
                 errorAttributes.put("status", ((ResponseStatusException) error).getStatus().value());
                 errorAttributes.put("messages", ((ResponseStatusException) error).getStatus().getReasonPhrase());
                 return errorAttributes;
-            } else if(error instanceof TimeoutException){
-                errorAttributes.put("status", HttpStatus.GATEWAY_TIMEOUT.value());
-                errorAttributes.put("messages", HttpStatus.GATEWAY_TIMEOUT.getReasonPhrase());
-                return errorAttributes;
             }
 
         }
@@ -91,7 +86,6 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
                 ",", errorAttributes.get("message"),
                 ",", errorAttributes.get("exception"),
                 ",", "重试次数：" + request.exchange().getAttributeOrDefault(RETRY_ITERATION_KEY, 0)));
-        System.out.println(errorAttributes.get("exception") instanceof BusinessException);
         errorAttributes.remove("exception");
         errorAttributes.remove("error");
         errorAttributes.remove("requestId");

@@ -13,15 +13,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.filter.factory.rewrite.MessageBodyDecoder;
+import org.springframework.cloud.gateway.filter.factory.rewrite.MessageBodyEncoder;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -29,9 +34,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR;
+import static java.util.function.Function.identity;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*;
 
 /**
  * @program: EmilyGateway
@@ -42,6 +49,14 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
 
     private EmilyGatewayProperties emilyGatewayProperties;
+    /**
+     * 响应体解码
+     */
+    private final Map<String, MessageBodyDecoder> messageBodyDecoders;
+    /**
+     * 响应体编码
+     */
+    private final Map<String, MessageBodyEncoder> messageBodyEncoders;
     /**
      * Ant表达式匹配类
      */
@@ -56,8 +71,12 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      */
     public static final String EMILY_LOG_ENTITY = "EMILY_LOG_ENTITY";
 
-    public EmilyLogGlobalFilter(EmilyGatewayProperties emilyGatewayProperties) {
+    public EmilyLogGlobalFilter(EmilyGatewayProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders, Set<MessageBodyEncoder> messageBodyEncoders) {
         this.emilyGatewayProperties = emilyGatewayProperties;
+        this.messageBodyDecoders = messageBodyDecoders.stream()
+                .collect(Collectors.toMap(MessageBodyDecoder::encodingType, identity()));
+        this.messageBodyEncoders = messageBodyEncoders.stream()
+                .collect(Collectors.toMap(MessageBodyEncoder::encodingType, identity()));
     }
 
     @Override
@@ -160,15 +179,19 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
                 if (body instanceof Flux) {
                     Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
                     return super.writeWith(fluxBody.buffer().map(dataBuffers -> {
+                        // 缓存工厂
+                        DataBufferFactory dataBufferFactory = exchange.getResponse().bufferFactory();
+                        // 将多个DataBuffer拼接到一起
+                        DataBuffer dataBuffer = dataBufferFactory.join(dataBuffers);
                         // 将DataBuffer转换为字节数组，兼容分片传输
-                        byte[] allBytes = DataBufferUtils.dataBufferToByte(dataBuffers);
-                        // 获取响应body
-                        String bodyString = convertToString(exchange, allBytes);
+                        byte[] originalBytes = DataBufferUtils.dataBufferToByte(dataBuffer);
+                        // 提取响应body
+                        String bodyString = extractBody(exchange, originalBytes);
                         // 获取日志实体类
                         LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
                         // 设置响应body
-                        logEntity.setData(convertToObj(exchange, bodyString));
-                        return exchange.getResponse().bufferFactory().wrap(allBytes);
+                        logEntity.setData(convertBody(exchange, bodyString));
+                        return dataBufferFactory.wrap(originalBytes);
                     }));
                 }
                 return super.writeWith(body);
@@ -190,21 +213,39 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
             }
         };
     }
-
     /**
-     * 将字节数组转换为字符串
+     * 将响应数据编码
+     *
+     * @param exchange   网关上下文
+     * @param dataBuffer 响应body
+     */
+    protected DataBuffer writeBody(ServerWebExchange exchange, String body) {
+        DataBufferFactory dataBufferFactory = exchange.getResponse().bufferFactory();
+        List<String> encodingHeaders = exchange.getResponse().getHeaders().getOrEmpty(HttpHeaders.CONTENT_ENCODING);
+        for (String encoding : encodingHeaders) {
+            MessageBodyEncoder encoder = messageBodyEncoders.get(encoding);
+            if (encoder != null) {
+                return dataBufferFactory.wrap(encoder.encode(dataBufferFactory.wrap(body.getBytes(StandardCharsets.UTF_8))));
+            }
+        }
+        return dataBufferFactory.wrap(body.getBytes(StandardCharsets.UTF_8));
+    }
+    /**
+     * 提取响应body
      *
      * @param exchange 网关上下文
      * @param allBytes 字节数组
      * @return 响应结果
      */
-    protected String convertToString(ServerWebExchange exchange, byte[] allBytes) {
-        HttpHeaders headers = exchange.getResponse().getHeaders();
-        // 获取响应body
-        if (headers.containsKey(HttpHeaders.CONTENT_ENCODING) && "gzip".equalsIgnoreCase(headers.get(HttpHeaders.CONTENT_ENCODING).get(0))) {
-            return GZIPUtils.decompressToString(allBytes);
+    protected String extractBody(ServerWebExchange exchange, byte[] originalBytes) {
+        List<String> encodingHeaders = exchange.getResponse().getHeaders().getOrEmpty(HttpHeaders.CONTENT_ENCODING);
+        for (String encoding : encodingHeaders) {
+            MessageBodyDecoder decoder = messageBodyDecoders.get(encoding);
+            if (decoder != null) {
+                return new String(decoder.decode(originalBytes), StandardCharsets.UTF_8);
+            }
         }
-        return new String(allBytes, StandardCharsets.UTF_8);
+        return new String(originalBytes, StandardCharsets.UTF_8);
     }
 
     /**
@@ -213,7 +254,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      * @param exchange 网关上线文
      * @param body     字符串
      */
-    protected Object convertToObj(ServerWebExchange exchange, String body) {
+    protected Object convertBody(ServerWebExchange exchange, String body) {
         if (StringUtils.isEmpty(body)) return null;
         // 响应数据类型
         MediaType mediaType = exchange.getResponse().getHeaders().getContentType();
