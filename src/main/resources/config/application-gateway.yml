@@ -1,6 +1,9 @@
 spring:
   cloud:
     gateway:
+      metrics:
+        # 开启指标收集
+        enabled: true
       loadbalancer:
         # 负载均衡503服务不可用时将状态码更换为404，默认：false
         use404: false
