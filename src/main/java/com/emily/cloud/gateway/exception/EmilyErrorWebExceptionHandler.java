@@ -1,5 +1,6 @@
 package com.emily.cloud.gateway.exception;
 
+import com.emily.framework.common.enums.AppHttpStatus;
 import com.emily.framework.common.exception.BusinessException;
 import com.emily.framework.common.exception.PrintExceptionInfo;
 import com.emily.framework.common.utils.log.LoggerUtils;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWeb
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import static org.springframework.cloud.gateway.filter.factory.RetryGatewayFilterFactory.RETRY_ITERATION_KEY;
 
@@ -53,11 +56,17 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
             if (error instanceof BusinessException) {
                 errorAttributes.put("status", ((BusinessException) error).getStatus());
                 errorAttributes.put("messages", ((BusinessException) error).getErrorMessage());
-            } else if(error instanceof ResponseStatusException){
+                return errorAttributes;
+            } else if (error instanceof ResponseStatusException) {
                 errorAttributes.put("status", ((ResponseStatusException) error).getStatus().value());
                 errorAttributes.put("messages", ((ResponseStatusException) error).getStatus().getReasonPhrase());
+                return errorAttributes;
+            } else if(error instanceof TimeoutException){
+                errorAttributes.put("status", HttpStatus.GATEWAY_TIMEOUT.value());
+                errorAttributes.put("messages", HttpStatus.GATEWAY_TIMEOUT.getReasonPhrase());
+                return errorAttributes;
             }
-            return errorAttributes;
+
         }
         errorAttributes = this.errorAttributes.getErrorAttributes(request, options.isIncluded(ErrorAttributeOptions.Include.STACK_TRACE));
 

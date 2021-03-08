@@ -80,6 +80,8 @@ spring:
           path: /rabbitmq/**
         - id: rabbitmq4
           path: /rabbitmq/**
+        - id: consul
+          path: /ui/**,/v1/**
       # 指定对外部网络访问限制
       exclude-externel-routes:
         - id: rabbitmq2

@@ -148,7 +148,7 @@ spring:
             - name: Retry
               args:
                 #应尝试重试的次数
-                retries: 4
+                retries: 1
                 # 应该重试的HTTP方法，用{@link org.springframework.http.HttpMethod}，默认：GET
                 methods: GET,POST
                 # 应该重试的Http状态码，使用{@link org.springframework.http.HttpStatus}
@@ -178,6 +178,16 @@ spring:
                   factor: 2
                   # 是否基于上次重试等待时间计算下次重试等待时间
                   basedOnPreviousValue: false
+            # 断路器配置
+            - name: CircuitBreaker
+              args:
+                name: emilyCircuitBreaker
+                # 支持控制器、schema地址
+                fallbackUri: forward:/defaultFallback
+                # 根据返回的状态码熔断降级
+                statusCodes:
+                  - 500
+                  - 404
         # 自定义路由ID,保持唯一
         - id: consul-demo
           #目标服务地址

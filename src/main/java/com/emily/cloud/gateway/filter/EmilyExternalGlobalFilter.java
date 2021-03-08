@@ -38,7 +38,7 @@ public class EmilyExternalGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if (determineExternalLimit(exchange)) {
-            throw new BusinessException(AppHttpStatus.SERVER_IIIEGAL_ACCESS);
+            throw new BusinessException(AppHttpStatus.SERVER_ILLEGAL_ACCESS);
         }
         return chain.filter(exchange);
     }

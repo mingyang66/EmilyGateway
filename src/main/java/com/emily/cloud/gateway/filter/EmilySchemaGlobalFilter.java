@@ -31,7 +31,7 @@ public class EmilySchemaGlobalFilter implements GlobalFilter, Ordered {
         if (emilyGatewayProperties.getIncludeSchemas().contains(HttpUtils.getSchema(exchange.getRequest()))) {
             return chain.filter(exchange);
         }
-        throw new BusinessException(AppHttpStatus.SERVER_IIIEGAL_ACCESS);
+        throw new BusinessException(AppHttpStatus.SERVER_ILLEGAL_ACCESS);
     }
 
     @Override

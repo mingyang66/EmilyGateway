@@ -23,7 +23,10 @@ import java.util.Set;
  * @create: 2021/03/03
  */
 public class EmilyExternalGatewayFilterFactory extends AbstractGatewayFilterFactory<EmilyExternalGatewayFilterFactory.Config> {
-
+    /**
+     * 外网限制组件名
+     */
+    public static final String NAME = "EmilyExternal";
     private static final String ENABLE = "enable";
     private static final String PATH = "path";
     private int order;
@@ -55,7 +58,7 @@ public class EmilyExternalGatewayFilterFactory extends AbstractGatewayFilterFact
         @Override
         public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
             if (determineExternalLimit(exchange, config)) {
-                throw new BusinessException(AppHttpStatus.SERVER_IIIEGAL_ACCESS);
+                throw new BusinessException(AppHttpStatus.SERVER_ILLEGAL_ACCESS);
             }
             return chain.filter(exchange);
         }
@@ -97,6 +100,11 @@ public class EmilyExternalGatewayFilterFactory extends AbstractGatewayFilterFact
         public void setOrder(int order) {
             this.order = order;
         }
+    }
+
+    @Override
+    public String name() {
+        return NAME;
     }
 
     public static class Config {
