@@ -4,7 +4,6 @@ import com.emily.cloud.gateway.config.EmilyGatewayProperties;
 import com.emily.cloud.gateway.entity.LogEntity;
 import com.emily.cloud.gateway.utils.DataBufferUtils;
 import com.emily.framework.common.enums.DateFormatEnum;
-import com.emily.framework.common.utils.calculation.GZIPUtils;
 import com.emily.framework.common.utils.json.JSONUtils;
 import com.emily.framework.common.utils.log.LoggerUtils;
 import com.emily.framework.common.utils.path.PathMatcher;
@@ -14,19 +13,16 @@ import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.MessageBodyDecoder;
-import org.springframework.cloud.gateway.filter.factory.rewrite.MessageBodyEncoder;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -38,7 +34,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR;
 
 /**
  * @program: EmilyGateway
@@ -54,10 +51,6 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      */
     private final Map<String, MessageBodyDecoder> messageBodyDecoders;
     /**
-     * 响应体编码
-     */
-    private final Map<String, MessageBodyEncoder> messageBodyEncoders;
-    /**
      * Ant表达式匹配类
      */
     private PathMatcher pathMatcher = new PathMatcher();
@@ -71,12 +64,10 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      */
     public static final String EMILY_LOG_ENTITY = "EMILY_LOG_ENTITY";
 
-    public EmilyLogGlobalFilter(EmilyGatewayProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders, Set<MessageBodyEncoder> messageBodyEncoders) {
+    public EmilyLogGlobalFilter(EmilyGatewayProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
         this.emilyGatewayProperties = emilyGatewayProperties;
         this.messageBodyDecoders = messageBodyDecoders.stream()
                 .collect(Collectors.toMap(MessageBodyDecoder::encodingType, identity()));
-        this.messageBodyEncoders = messageBodyEncoders.stream()
-                .collect(Collectors.toMap(MessageBodyEncoder::encodingType, identity()));
     }
 
     @Override
@@ -213,23 +204,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
             }
         };
     }
-    /**
-     * 将响应数据编码
-     *
-     * @param exchange   网关上下文
-     * @param dataBuffer 响应body
-     */
-    protected DataBuffer writeBody(ServerWebExchange exchange, String body) {
-        DataBufferFactory dataBufferFactory = exchange.getResponse().bufferFactory();
-        List<String> encodingHeaders = exchange.getResponse().getHeaders().getOrEmpty(HttpHeaders.CONTENT_ENCODING);
-        for (String encoding : encodingHeaders) {
-            MessageBodyEncoder encoder = messageBodyEncoders.get(encoding);
-            if (encoder != null) {
-                return dataBufferFactory.wrap(encoder.encode(dataBufferFactory.wrap(body.getBytes(StandardCharsets.UTF_8))));
-            }
-        }
-        return dataBufferFactory.wrap(body.getBytes(StandardCharsets.UTF_8));
-    }
+
     /**
      * 提取响应body
      *

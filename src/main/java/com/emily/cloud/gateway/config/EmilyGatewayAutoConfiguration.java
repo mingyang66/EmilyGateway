@@ -16,7 +16,6 @@ import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
 import org.springframework.cloud.gateway.filter.ReactiveLoadBalancerClientFilter;
 import org.springframework.cloud.gateway.filter.RouteToRequestUrlFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.MessageBodyDecoder;
-import org.springframework.cloud.gateway.filter.factory.rewrite.MessageBodyEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -71,8 +70,8 @@ public class EmilyGatewayAutoConfiguration {
      * 注册请求响应日志拦截全局过滤器
      */
     @Bean
-    public EmilyLogGlobalFilter emilyLogGlobalFilter(EmilyGatewayProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders, Set<MessageBodyEncoder> messageBodyEncoders) {
-        EmilyLogGlobalFilter emilyLogGlobalFilter = new EmilyLogGlobalFilter(emilyGatewayProperties, messageBodyDecoders, messageBodyEncoders);
+    public EmilyLogGlobalFilter emilyLogGlobalFilter(EmilyGatewayProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
+        EmilyLogGlobalFilter emilyLogGlobalFilter = new EmilyLogGlobalFilter(emilyGatewayProperties, messageBodyDecoders);
         //设置优先级顺序在{@link org.springframework.cloud.gateway.filter.NettyWriteResponseFilter}(-1)过滤器之后，方便获取到真实的请求地址
         emilyLogGlobalFilter.setOrder(NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER - 1);
         return emilyLogGlobalFilter;
