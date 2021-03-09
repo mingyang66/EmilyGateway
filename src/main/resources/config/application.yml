@@ -72,6 +72,9 @@ spring:
       # 开启日志记录组件
       enable: true
     gateway:
+      circuitbreak:
+        # 断路器超时时间
+        timeout: 3000
       # 指定网关路由访问日志记录限制
       exclude-logging-routes:
         #- id: rabbitmq2

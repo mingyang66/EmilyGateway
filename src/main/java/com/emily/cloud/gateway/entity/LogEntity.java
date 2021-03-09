@@ -68,7 +68,6 @@ public class LogEntity implements Serializable {
         this.setcId(request.getId());
         this.setMethod(HttpUtils.getMethod(request));
         this.setRequestBody(HttpUtils.getRequestBody(exchange));
-        this.setTime(System.currentTimeMillis());
         this.setContentType(HttpUtils.getContentType(request));
         this.setSchema(HttpUtils.getSchema(request));
         this.setHeaders(request.getHeaders());

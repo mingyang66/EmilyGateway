@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 import static com.emily.cloud.gateway.filter.EmilyLogGlobalFilter.EMILY_LOG_ENTITY;
+import static com.emily.cloud.gateway.filter.EmilyLogGlobalFilter.EMILY_REQUEST_TIME;
 import static org.springframework.cloud.gateway.filter.factory.RetryGatewayFilterFactory.RETRY_ITERATION_KEY;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
@@ -37,6 +38,7 @@ public class EmilyRetryGlobalFilter implements GlobalFilter, Ordered {
                 // 设置请求URL
                 URI uri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
                 logEntity.setUrl(uri == null ? null : uri.toString());
+                logEntity.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
                 LoggerUtils.info(EmilyRetryGlobalFilter.class, JSONUtils.toJSONString(logEntity));
             }
         });

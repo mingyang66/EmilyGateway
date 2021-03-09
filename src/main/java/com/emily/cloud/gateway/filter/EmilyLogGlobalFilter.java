@@ -60,6 +60,10 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      * 日志实体对象
      */
     public static final String EMILY_LOG_ENTITY = "EMILY_LOG_ENTITY";
+    /**
+     * 请求开始时间
+     */
+    public static final String EMILY_REQUEST_TIME = "EMILY_REQUEST_TIME";
 
     public EmilyLogGlobalFilter(EmilyGatewayProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
         this.emilyGatewayProperties = emilyGatewayProperties;
@@ -74,6 +78,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         exchange.getAttributes().put(EMILY_LOG_ENTITY, new LogEntity(exchange));
+        exchange.getAttributes().put(EMILY_REQUEST_TIME, System.currentTimeMillis());
         /**
          * 获取响应结果有两种方案：
          * 1.就是如下自定义修饰类的方式获取响应结果
@@ -127,7 +132,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置请求URL
         logEntity.setUrl(exchange.getAttributes().containsKey(GATEWAY_REQUEST_URL_ATTR) ? exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString() : exchange.getRequest().getURI().toString());
         // 设置响应时间
-        logEntity.setTime(System.currentTimeMillis()-logEntity.getTime());
+        logEntity.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
         // 设置返回的错误信息
         logEntity.setResponseBody(throwable.getMessage());
         // 记录日志信息
@@ -145,7 +150,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置请求URL
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
         // 设置响应时间
-        logEntity.setTime(System.currentTimeMillis()-logEntity.getTime());
+        logEntity.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
         // 记录日志信息
         LoggerUtils.info(EmilyLogGlobalFilter.class, JSONUtils.toJSONString(logEntity));
         return Mono.empty();

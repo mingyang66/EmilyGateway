@@ -14,7 +14,7 @@ spring:
         # 连接超时，单位毫秒，默认：45s
         connect-timeout: 45000
         # 响应超时时间，{@link java.time.Duration}类型
-        response-timeout: PT30S
+        response-timeout: PT1S
         # 最大响应头大小，默认:8192，单位：字节B
         max-header-size: 8192
         # 最大初始行大小，单位：字节B
@@ -147,6 +147,16 @@ spring:
                 redis-rate-limiter.requestedTokens: 1
                 # 设置限流依据beanName
                 key-resolver: '#{@ipAddressKeyResolver}'
+            # 断路器配置
+            - name: CircuitBreaker
+              args:
+                name: emilyCircuitBreaker
+                # 支持控制器、schema地址
+                fallbackUri: forward:/defaultFallback
+                # 根据返回的状态码熔断降级
+                statusCodes:
+                  - 500
+                  - 404
             # 失败重试过滤器
             - name: Retry
               args:
@@ -181,16 +191,6 @@ spring:
                   factor: 2
                   # 是否基于上次重试等待时间计算下次重试等待时间
                   basedOnPreviousValue: false
-            # 断路器配置
-            - name: CircuitBreaker
-              args:
-                name: emilyCircuitBreaker
-                # 支持控制器、schema地址
-                fallbackUri: forward:/defaultFallback
-                # 根据返回的状态码熔断降级
-                statusCodes:
-                  - 500
-                  - 404
         # 自定义路由ID,保持唯一
         - id: consul-demo
           #目标服务地址
