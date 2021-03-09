@@ -2,14 +2,11 @@ package com.emily.cloud.gateway.entity;
 
 import com.emily.cloud.gateway.utils.HttpUtils;
 import com.emily.cloud.gateway.utils.enums.TraceType;
-import com.emily.framework.common.enums.DateFormatEnum;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 /**
@@ -47,25 +44,21 @@ public class LogEntity implements Serializable {
      */
     private String url;
     /**
-     * 请求参数
-     */
-    private Object requestBody;
-    /**
      * 请求header
      */
     private HttpHeaders headers;
     /**
+     * 请求参数
+     */
+    private Object requestBody;
+    /**
      * 响应数据
      */
-    private Object data;
+    private Object responseBody;
     /**
      * 请求时间
      */
-    private String startDate;
-    /**
-     * 响应时间
-     */
-    private String endDate;
+    private long time;
 
     public LogEntity() {
     }
@@ -75,7 +68,7 @@ public class LogEntity implements Serializable {
         this.setcId(request.getId());
         this.setMethod(HttpUtils.getMethod(request));
         this.setRequestBody(HttpUtils.getRequestBody(exchange));
-        this.setStartDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
+        this.setTime(System.currentTimeMillis());
         this.setContentType(HttpUtils.getContentType(request));
         this.setSchema(HttpUtils.getSchema(request));
         this.setHeaders(request.getHeaders());
@@ -121,28 +114,20 @@ public class LogEntity implements Serializable {
         this.requestBody = requestBody;
     }
 
-    public Object getData() {
-        return data;
+    public Object getResponseBody() {
+        return responseBody;
     }
 
-    public void setData(Object data) {
-        this.data = data;
+    public void setResponseBody(Object responseBody) {
+        this.responseBody = responseBody;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public long getTime() {
+        return time;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public String getContentType() {

@@ -3,7 +3,6 @@ package com.emily.cloud.gateway.filter;
 import com.emily.cloud.gateway.config.EmilyGatewayProperties;
 import com.emily.cloud.gateway.entity.LogEntity;
 import com.emily.cloud.gateway.utils.DataBufferUtils;
-import com.emily.framework.common.enums.DateFormatEnum;
 import com.emily.framework.common.utils.json.JSONUtils;
 import com.emily.framework.common.utils.log.LoggerUtils;
 import com.emily.framework.common.utils.path.PathMatcher;
@@ -25,8 +24,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -130,9 +127,9 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置请求URL
         logEntity.setUrl(exchange.getAttributes().containsKey(GATEWAY_REQUEST_URL_ATTR) ? exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString() : exchange.getRequest().getURI().toString());
         // 设置响应时间
-        logEntity.setEndDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
+        logEntity.setTime(System.currentTimeMillis()-logEntity.getTime());
         // 设置返回的错误信息
-        logEntity.setData(throwable.getMessage());
+        logEntity.setResponseBody(throwable.getMessage());
         // 记录日志信息
         LoggerUtils.error(EmilyLogGlobalFilter.class, JSONUtils.toJSONString(logEntity));
     }
@@ -148,7 +145,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置请求URL
         logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
         // 设置响应时间
-        logEntity.setEndDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DateFormatEnum.YYYY_MM_DD_HH_MM_SS_SSS.getFormat())));
+        logEntity.setTime(System.currentTimeMillis()-logEntity.getTime());
         // 记录日志信息
         LoggerUtils.info(EmilyLogGlobalFilter.class, JSONUtils.toJSONString(logEntity));
         return Mono.empty();
@@ -180,7 +177,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
                         // 获取日志实体类
                         LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
                         // 设置响应body
-                        logEntity.setData(convertBody(exchange, bodyString));
+                        logEntity.setResponseBody(convertBody(exchange, bodyString));
                         return dataBufferFactory.wrap(originalBytes);
                     }));
                 }
