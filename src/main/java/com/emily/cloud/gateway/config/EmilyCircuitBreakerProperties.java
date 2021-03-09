@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author: 姚明洋
  * @create: 2021/03/09
  */
-@ConfigurationProperties(prefix = "spring.emily.gateway.circuitbreak")
+@ConfigurationProperties(prefix = "spring.emily.gateway.circuitbreaker")
 public class EmilyCircuitBreakerProperties {
     /**
      * 超时时间，默认：1000毫秒
