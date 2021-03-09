@@ -97,7 +97,6 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      * 2.只配置唯一标识，则全部不记录日志
      * 3.配置唯一标识和符合ANT表达式的路由，则只有指定的路由不记录日志
      *
-     * @param routeDefinition
      * @return
      */
     protected boolean determineLogLimit(ServerWebExchange exchange) {

@@ -277,3 +277,9 @@ spring:
             - Path=/websocket/**
           filters:
             #- StripPrefix=1
+        - id: file
+          uri: http://172.30.67.123:9000/api/dataDownload
+          predicates:
+            - Path=/file/**
+          filters:
+            - StripPrefix=1
