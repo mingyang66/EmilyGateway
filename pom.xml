@@ -17,7 +17,7 @@
     <properties>
         <java.version>1.8</java.version>
         <spring.cloud.version>3.0.1</spring.cloud.version>
-        <emily.logger.version>2.2.7.RELEASE</emily.logger.version>
+        <emily.logger.version>2.4.0</emily.logger.version>
     </properties>
 
     <dependencies>

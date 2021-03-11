@@ -1,5 +1,6 @@
 #定制镜像所需的基础镜像
-FROM openjdk:8-jdk-alpine
+#FROM openjdk:8-jdk-alpine
+FROM adoptopenjdk/openjdk11:x86_64-alpine-jre-11.0.9_11
 #作者
 MAINTAINER Emily
 #工作目录路径

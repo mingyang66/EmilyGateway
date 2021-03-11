@@ -32,14 +32,30 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
+            # 是否允许携带认证信息，默认：false
+            allowCredentials: false
+            # 允许跨域的源（网站域名|IP）,设置*为全部
             allowedOrigins: "*"
+              #- "https://172.30.67.122"
+              #- https://localhost
+              #- http://61.152.230.66:80
+            # 允许跨域的源正则表达式匹配
+            #allowedOriginPatterns: "*"
+            # 允许跨域的method,设置*为全部
             allowedMethods:
               - GET
               - POST
               - PUT
               - OPTIONS
+            # 允许跨域秦秋的Header字段，设置*为全部
             allowedHeaders: "*"
-            allowCredentials: false
+            # 发生跨域问题时展示的响应header信息，默认：null，设置*为所有
+            #exposedHeaders: "*"
+            # 配置客户端预检请求响应缓存时间，单位：秒（默认：1800）
+            maxAge: 1800
+      default-filters:
+        # 消除重复的请求header
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Headers Vary, RETAIN_UNIQUE
       routes:
         # 自定义路由ID,保持唯一
         - id: EmilyFramework
