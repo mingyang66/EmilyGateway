@@ -164,15 +164,15 @@ spring:
                 # 设置限流依据beanName
                 key-resolver: '#{@ipAddressKeyResolver}'
             # 断路器配置
-            - name: CircuitBreaker
-              args:
-                name: emilyCircuitBreaker
+            #- name: CircuitBreaker
+             # args:
+              #  name: emilyCircuitBreaker
                 # 支持控制器、schema地址
-                fallbackUri: forward:/defaultFallback
+               # fallbackUri: forward:/defaultFallback
                 # 根据返回的状态码熔断降级
-                statusCodes:
-                  - 500
-                  - 404
+                #statusCodes:
+                 # - 500
+                  #- 404
             # 失败重试过滤器
             - name: Retry
               args:

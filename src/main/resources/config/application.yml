@@ -68,6 +68,10 @@ spring:
       ribbon:
         # 关闭ribbon客户端负载均衡策略，默认：true
         enabled: false
+      service-discovery:
+        # 服务发现调用超时时间，默认30S（缓存关闭时有效:DiscoveryClientServiceInstanceListSupplier）
+        timeout: PT30S
+      # 负载均衡缓存从consul上拿到的服务实例信息配置（CachingServiceInstanceListSupplier）
       cache:
         # 开启springcloud loadbalancer负载均衡缓存机制，默认：true
         enabled: true
