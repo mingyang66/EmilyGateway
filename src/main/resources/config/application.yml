@@ -1,9 +1,68 @@
+server:
+  port: 443
+  # 优雅停机
+  shutdown: graceful
+  ssl:
+    # 是否启用SSL支持
+    enabled: true
+    # 标识秘钥存储中秘钥的别名
+    key-alias: emily
+    # 访问秘钥存储的密码
+    key-store-password: 123456
+    # 指定保存SSL证书的秘钥存储的路径（通常是jks文件）
+    key-store: classpath:emily.p12
+    # 秘钥存储的类型
+    key-store-type: PKCS12
+    # 要使用的SSL协议
+    protocol: TLS
+  http:
+    # 是否开启http端口号
+    enable: true
+    # http端口号
+    port: 80
+    # 优雅停机
+    shutdown: graceful
+    # http请求是否自动跳转到https，默认：true
+    http-to-https: true
+management:
+  server:
+    port: 7443
+    ssl:
+      # 是否开启SSL支持，默认：true
+      enabled: true
+      # 标识秘钥存储中秘钥的别名
+      key-alias: emily
+      #访问秘钥存储的密码
+      key-store-password: 123456
+      # 指定保存SSL证书的秘钥存储的路径（通常是jks文件）
+      key-store: classpath:emily.p12
+      # 秘钥存储的类型
+      key-store-type: PKCS12
+      # 要使用的SSL协议
+      protocol: TLS
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    gateway:
+      # 开启网关端点，默认：true
+      enabled: true
+spring:
+  profiles:
+    # 指定包含哪些配置文件
+    include: gateway
+
+---
+# Redis 缓存配置
 spring:
   redis:
     host: 172.30.67.122
     port: 6379
     username:
     password: admin
+---
+spring:
   cloud:
     loadbalancer:
       ribbon:
