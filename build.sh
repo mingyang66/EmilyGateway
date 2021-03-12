@@ -10,10 +10,12 @@
   # .代表本次执行的上下文路径
   docker build -f ./Dockerfile . -t emilygateway:1.0.3
   echo '镜像构建完成...'
+  localIp=$(/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:")
+  echo '本机Ip地址是：'${localIp}
   # 运行构建的镜像
   docker run \
   -e JAVA_ACL_TOKEN=03259e78-848c-3ea8-c0f6-524279d52929 \
-  -e JAVA_LOCAL_IP=172.30.67.122 \
+  -e JAVA_LOCAL_IP=${localIp} \
   -e JAVA_LOCAL_PORT=80 \
   --restart=always \
   --privileged=true \
