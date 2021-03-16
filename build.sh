@@ -1,3 +1,26 @@
+  # -q 输出全部容器ID
+# -a 输出所有容器信息，包括未启动的容器
+# -f 指定使用过滤器
+# ^ 容器名称必须使用此字符串开始
+# $ 容器名称必须使用次字符串结束
+# 使用$(指令)将指令结果赋值给变量
+containerId=$(sudo docker ps -aqf 'name=^emilygateway$')
+if [ "$containerId" = "" ]; then
+  echo '容器不存在，无需删除'
+else
+  echo '已存在的容器ID是:'${containerId}
+  docker rm -f ${containerId}
+  echo '删除容器成功...'
+fi
+
+imageId=$(docker images -q emilygateway:1.0.3)
+if [ "$imageId" = "" ]; then
+   echo '镜像不存在，无需删除'
+else
+   echo '存在镜像ID是：'${imageId}
+   docker rmi ${imageId}
+   echo '删除镜像成功'
+fi
   # 端口号占用查询
   # lsof -i tcp:port
   echo '开始打包...'
