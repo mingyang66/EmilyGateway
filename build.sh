@@ -1,4 +1,6 @@
-  # -q 输出全部容器ID
+# 版本号
+VERSION=1.0.3
+# -q 输出全部容器ID
 # -a 输出所有容器信息，包括未启动的容器
 # -f 指定使用过滤器
 # ^ 容器名称必须使用此字符串开始
@@ -13,7 +15,7 @@ else
   echo '删除容器成功...'
 fi
 
-imageId=$(docker images -q emilygateway:1.0.3)
+imageId=$(docker images -q emilygateway:${VERSION})
 if [ "$imageId" = "" ]; then
    echo '镜像不存在，无需删除'
 else
@@ -31,7 +33,7 @@ fi
   # -f:指定要使用的Dockerfile路径
   # -t:镜像的名字及标签，通常是name:tag或name格式
   # .代表本次执行的上下文路径
-  docker build -f ./Dockerfile . -t emilygateway:1.0.3
+  docker build -f ./Dockerfile . -t emilygateway:${VERSION}
   echo '镜像构建完成...'
   localIp=$(/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:")
   echo '本机Ip地址是：'${localIp}
@@ -46,6 +48,6 @@ fi
   -p 80:80 \
   -p 443:443 \
   -p 7443:7443 \
-  -v /Users/yaomingyang/Documents/logs:/app/logs \
-  emilygateway:1.0.3
+  -v /Users/yaomingyang/Documents/IDE/workplace-java/logs:/app/logs \
+  emilygateway:${VERSION}
   echo '容器创建成功...'
