@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
  */
 public class RedisRouteDefinitionRepository implements RouteDefinitionRepository {
 
-    public static final String GATEWAY_ROUTE_KEY = "GATEWAY_ROUTES";
+    public static final String GATEWAY_ROUTE_KEY = "GATEWAY_ROUTE_KEY";
 
     private RedisTemplate redisTemplate;
 
