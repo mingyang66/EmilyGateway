@@ -49,6 +49,8 @@ spring:
         management-suffix: management
         # 注册监控服务时的tag
         management-tags: emily=gateway-management
+        # 注册actuator监控服务端口（默认是：management port）--使用docker时设置
+        management-port: ${JAVA_LOCAL_MANAGEMENT_PORT}
         # 注册健康检查到consul,在服务开发过程中有用
         register-health-check: true
         # 健康检查路径，默认：/actuator/health

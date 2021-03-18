@@ -11,6 +11,10 @@ if [ "$containerId" = "" ]; then
   echo '容器不存在，无需删除'
 else
   echo '已存在的容器ID是:'${containerId}
+  docker stop ${containerId}
+  echo '开始休眠'
+  sleep 2
+  echo '已休眠2s'
   docker rm -f ${containerId}
   echo '删除容器成功...'
 fi
@@ -37,17 +41,22 @@ fi
   echo '镜像构建完成...'
   localIp=$(/sbin/ifconfig -a|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:")
   echo '本机Ip地址是：'${localIp}
+
+  httpPort=80
+  httpsPort=443
+  managementPort=7443
   # 运行构建的镜像
   docker run \
   -e JAVA_ACL_TOKEN=03259e78-848c-3ea8-c0f6-524279d52929 \
   -e JAVA_LOCAL_IP=${localIp} \
   -e JAVA_LOCAL_PORT=80 \
+  -e JAVA_LOCAL_MANAGEMENT_PORT=${managementPort} \
   --restart=always \
   --privileged=true \
   -itd --name emilygateway \
-  -p 80:80 \
-  -p 443:443 \
-  -p 7443:7443 \
+  -p ${httpPort}:80 \
+  -p ${httpsPort}:443 \
+  -p ${managementPort}:7443 \
   -v /Users/yaomingyang/Documents/IDE/workplace-java/logs:/app/logs \
   emilygateway:${VERSION}
   echo '容器创建成功...'
