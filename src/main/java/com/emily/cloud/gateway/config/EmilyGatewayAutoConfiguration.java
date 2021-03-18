@@ -6,7 +6,9 @@ import com.emily.cloud.gateway.filter.EmilyRetryGlobalFilter;
 import com.emily.cloud.gateway.filter.EmilySchemaGlobalFilter;
 import com.emily.cloud.gateway.filter.factory.EmilyExternalGatewayFilterFactory;
 import com.emily.cloud.gateway.filter.ratelimit.IpAddressKeyResolver;
+import com.emily.cloud.gateway.route.RedisRouteDefinitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.config.conditional.ConditionalOnEnabledFilter;
@@ -16,8 +18,10 @@ import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
 import org.springframework.cloud.gateway.filter.ReactiveLoadBalancerClientFilter;
 import org.springframework.cloud.gateway.filter.RouteToRequestUrlFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.MessageBodyDecoder;
+import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.PostConstruct;
 import java.util.Set;
@@ -105,5 +109,14 @@ public class EmilyGatewayAutoConfiguration {
     @Bean(IpAddressKeyResolver.BEAN_NAME)
     public IpAddressKeyResolver ipAddressKeyResolver() {
         return new IpAddressKeyResolver();
+    }
+
+    /**
+     * 初始化自定义路由仓储
+     */
+    @Bean
+    @ConditionalOnMissingBean(RouteDefinitionRepository.class)
+    public RedisRouteDefinitionRepository redisRouteDefinitionRepository(RedisTemplate redisTemplate){
+        return new RedisRouteDefinitionRepository(redisTemplate);
     }
 }
