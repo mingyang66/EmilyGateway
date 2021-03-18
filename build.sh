@@ -49,7 +49,7 @@ fi
   docker run \
   -e JAVA_ACL_TOKEN=03259e78-848c-3ea8-c0f6-524279d52929 \
   -e JAVA_LOCAL_IP=${localIp} \
-  -e JAVA_LOCAL_PORT=80 \
+  -e JAVA_LOCAL_PORT=${httpPort} \
   -e JAVA_LOCAL_MANAGEMENT_PORT=${managementPort} \
   --restart=always \
   --privileged=true \
