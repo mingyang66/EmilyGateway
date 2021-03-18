@@ -36,7 +36,7 @@ spring:
         # 服务名称
         service-name: ${spring.application.name}
         # 实例ID(唯一标识)，默认是：${spring.application.name}:comma,separated,profiles:${server.port}
-        instance-id: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+        instance-id: ${spring.application.name}:${random.value}
         # 表示注册服务时使用IP而不是hostname，默认：false
         prefer-ip-address: true
         # 访问服务时要使用的IP地址（还必须设置要使用的prefer-ip-address为true）--使用docker时设置
