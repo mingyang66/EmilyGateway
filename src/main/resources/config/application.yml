@@ -24,6 +24,19 @@ server:
     shutdown: graceful
     # http请求是否自动跳转到https，默认：true
     http-to-https: true
+  netty:
+    # 网络通道(channel)连接超时时间
+    connection-timeout: PT10S
+    # h2c(即：http/2协议的明文版本)升级请求的最大内容长度，默认：0B
+    h2c-max-content-length: 0B
+    # http请求解码的初始缓冲区大小，默认：128B
+    initial-buffer-size: 128B
+    # HTTP请求可解码的最大块大小，默认：8KB
+    max-chunk-size: 8KB
+    # http请求的初始行可以解码的最大长度
+    max-initial-line-length: 4KB
+    # 解码请求时是否验证标头，默认：true
+    validate-headers: true
 management:
   server:
     port: 7443
