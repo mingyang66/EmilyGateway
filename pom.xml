@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.2</version>
+        <version>2.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.emily.cloud</groupId>
@@ -16,8 +16,8 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <spring.cloud.version>3.0.1</spring.cloud.version>
-        <emily.logger.version>2.4.0</emily.logger.version>
+        <spring.cloud.version>3.0.2</spring.cloud.version>
+        <emily.logger.version>2.4.2</emily.logger.version>
     </properties>
 
     <dependencies>
