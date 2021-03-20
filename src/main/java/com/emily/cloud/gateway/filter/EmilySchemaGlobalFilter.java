@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 /**
  * @program: EmilyGateway
  * @description: 网关协议过滤器
- * @author: 姚明洋
+ * @author:
  * @create: 2021/03/05
  */
 public class EmilySchemaGlobalFilter implements GlobalFilter, Ordered {

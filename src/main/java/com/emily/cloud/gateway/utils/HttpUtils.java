@@ -18,7 +18,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.C
 /**
  * @program: EmilyGateway
  * @description: 请求工具类
- * @author: 姚明洋
+ * @author:
  * @create: 2021/03/04
  */
 public class HttpUtils {

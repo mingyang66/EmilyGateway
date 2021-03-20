@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @program: EmilyGateway
  * @description: 断路器配置文件
- * @author: 姚明洋
+ * @author:
  * @create: 2021/03/09
  */
 @ConfigurationProperties(prefix = "spring.emily.gateway.circuitbreaker")
