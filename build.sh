@@ -60,6 +60,6 @@ fi
   -p ${httpPort}:80 \
   -p ${httpsPort}:443 \
   -p ${managementPort}:7443 \
-  -v /Users/yaomingyang/Documents/IDE/workplace-java/logs:/app/logs \
+  -v /Users/yaomingyang/Documents/IDE/workplace-java/logs/emilygateway:/app/logs \
   emilygateway:${VERSION}
   echo '容器创建成功...'
