@@ -45,7 +45,9 @@ fi
   httpPort=80
   httpsPort=443
   managementPort=7443
-  # 运行构建的镜像
+  # 运行构建的镜像 -p hostPort（宿主机端口号）:containerPort(容器端口号)
+  # name:容器名称
+  # --net：网络模式，默认：bridge(host、container、none) 注：mac系统无法使用host模式| docker network ls
   docker run \
   -e JAVA_ACL_TOKEN=03259e78-848c-3ea8-c0f6-524279d52929 \
   -e JAVA_LOCAL_IP=${localIp} \
@@ -53,6 +55,7 @@ fi
   -e JAVA_LOCAL_MANAGEMENT_PORT=${managementPort} \
   --restart=always \
   --privileged=true \
+  --net=bridge \
   -itd --name emilygateway \
   -p ${httpPort}:80 \
   -p ${httpsPort}:443 \
