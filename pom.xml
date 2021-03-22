@@ -15,7 +15,7 @@
     <description>Emily网关</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <spring.cloud.version>3.0.2</spring.cloud.version>
         <emily.logger.version>2.4.2</emily.logger.version>
     </properties>
@@ -150,9 +150,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <!--源代码使用的JDK版本-->
-                    <source>11</source>
+                    <source>${java.version}</source>
                     <!--需要生成的目标class文件的编译版本-->
-                    <target>11</target>
+                    <target>${java.version}</target>
                     <!--字符集编码-->
                     <encoding>UTF-8</encoding>
                     <!--编译器使用的初始内存-->
