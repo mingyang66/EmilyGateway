@@ -24,7 +24,7 @@
         <!--Springcloud版本-->
         <spring.cloud.version>3.0.2</spring.cloud.version>
         <!--底层库版本-->
-        <emily.logger.version>2.4.3</emily.logger.version>
+        <emily.logger.version>2.4.4</emily.logger.version>
     </properties>
 
     <dependencies>
