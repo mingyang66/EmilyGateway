@@ -1,8 +1,9 @@
 package com.emily.cloud.gateway.exception;
 
-import com.emily.framework.common.exception.BusinessException;
-import com.emily.framework.common.exception.PrintExceptionInfo;
-import com.emily.framework.common.utils.log.LoggerUtils;
+
+import com.emily.infrastructure.common.exception.BusinessException;
+import com.emily.infrastructure.common.exception.PrintExceptionInfo;
+import com.emily.infrastructure.logback.common.LoggerUtils;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
@@ -61,7 +62,7 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
             }
 
         }
-        errorAttributes = this.errorAttributes.getErrorAttributes(request, options.isIncluded(ErrorAttributeOptions.Include.STACK_TRACE));
+        errorAttributes = this.errorAttributes.getErrorAttributes(request, options);
 
         if (!options.isIncluded(ErrorAttributeOptions.Include.EXCEPTION)) {
             errorAttributes.remove("exception");

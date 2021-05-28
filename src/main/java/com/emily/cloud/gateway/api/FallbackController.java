@@ -1,9 +1,9 @@
 package com.emily.cloud.gateway.api;
 
-import com.emily.framework.common.base.ResponseData;
-import com.emily.framework.common.enums.AppHttpStatus;
-import com.emily.framework.common.exception.PrintExceptionInfo;
-import com.emily.framework.common.utils.log.LoggerUtils;
+import com.emily.infrastructure.common.base.SimpleResponse;
+import com.emily.infrastructure.common.enums.AppHttpStatus;
+import com.emily.infrastructure.common.exception.PrintExceptionInfo;
+import com.emily.infrastructure.logback.common.LoggerUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
@@ -24,12 +24,12 @@ public class FallbackController {
      * 默认服务降级处理接口
      */
     @GetMapping("defaultFallback")
-    public ResponseData fallback(ServerWebExchange exchange) {
+    public SimpleResponse fallback(ServerWebExchange exchange) {
         if (exchange.getAttributes().containsKey(CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR)) {
             Throwable ex = getRootCause(exchange.getAttribute(CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR));
             LoggerUtils.error(FallbackController.class, PrintExceptionInfo.printErrorInfo(ex));
         }
-        return ResponseData.buildResponse(AppHttpStatus.SERVER_CIRCUIT_BREAKER);
+        return SimpleResponse.buildResponse(AppHttpStatus.SERVER_CIRCUIT_BREAKER);
     }
 
     private static Throwable getRootCause(final Throwable throwable) {
