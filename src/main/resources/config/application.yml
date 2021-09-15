@@ -73,7 +73,7 @@ spring:
     # 客户端连接类型
     client-type: lettuce
     # 服务IP地址
-    host: 172.30.67.122
+    host: 127.0.0.1
     # 端口号
     port: 6379
     # 用户名
@@ -133,7 +133,7 @@ spring:
           spec: initialCapacity=256,maximumSize=1000,expireAfterWrite=35s,recordStats
   zipkin:
     # zipkin服务器地址，默认是：http://localhost:9411/
-    base-url: http://172.30.67.122:9411
+    base-url: http://127.0.0.1:9411
     service:
       # zipkin中展示的服务名称
       name: ${spring.application.name}

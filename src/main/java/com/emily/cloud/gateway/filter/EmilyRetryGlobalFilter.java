@@ -2,7 +2,8 @@ package com.emily.cloud.gateway.filter;
 
 import com.emily.cloud.gateway.entity.LogEntity;
 import com.emily.infrastructure.common.utils.json.JSONUtils;
-import com.emily.infrastructure.logback.common.LoggerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -22,7 +23,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * @create: 2021/02/22
  */
 public class EmilyRetryGlobalFilter implements GlobalFilter, Ordered {
-
+    private static final Logger logger = LoggerFactory.getLogger(EmilyRetryGlobalFilter.class);
     /**
      * 优先级顺序
      */
@@ -39,7 +40,7 @@ public class EmilyRetryGlobalFilter implements GlobalFilter, Ordered {
                 URI uri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
                 logEntity.setUrl(uri == null ? null : uri.toString());
                 logEntity.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
-                LoggerUtils.info(EmilyRetryGlobalFilter.class, JSONUtils.toJSONString(logEntity));
+                logger.info(JSONUtils.toJSONString(logEntity));
             }
         });
     }

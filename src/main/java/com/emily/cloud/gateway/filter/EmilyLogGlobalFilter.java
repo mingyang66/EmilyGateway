@@ -1,14 +1,16 @@
 package com.emily.cloud.gateway.filter;
 
+import com.emily.cloud.gateway.api.FallbackController;
 import com.emily.cloud.gateway.config.EmilyGatewayProperties;
 import com.emily.cloud.gateway.entity.LogEntity;
 import com.emily.cloud.gateway.utils.DataBufferUtils;
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.common.utils.path.PathMatcher;
-import com.emily.infrastructure.logback.common.LoggerUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.MessageBodyDecoder;
@@ -42,6 +44,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 @SuppressWarnings("all")
 public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmilyLogGlobalFilter.class);
     private EmilyGatewayProperties emilyGatewayProperties;
     /**
      * 响应体解码
@@ -90,7 +93,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
                 // 当Mono完成并出现错误时触发，将会发送onError信号
                 .doOnError(throwable -> doLogError(exchange, throwable))
                 // 以任何理由终止的信号类型将会传递给此消费者
-                .doFinally(signalType -> LoggerUtils.info(EmilyLogGlobalFilter.class, "信号类型：" + signalType));
+                .doFinally(signalType -> logger.info("信号类型：" + signalType));
     }
 
     /**
@@ -136,7 +139,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置返回的错误信息
         logEntity.setResponseBody(throwable.getMessage());
         // 记录日志信息
-        LoggerUtils.error(EmilyLogGlobalFilter.class, JSONUtils.toJSONString(logEntity));
+        logger.error(JSONUtils.toJSONString(logEntity));
     }
 
     /**
@@ -152,7 +155,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         // 设置响应时间
         logEntity.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
         // 记录日志信息
-        LoggerUtils.info(EmilyLogGlobalFilter.class, JSONUtils.toJSONString(logEntity));
+        logger.info(JSONUtils.toJSONString(logEntity));
         return Mono.empty();
     }
 

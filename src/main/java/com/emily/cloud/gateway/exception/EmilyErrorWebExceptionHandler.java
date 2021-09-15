@@ -1,9 +1,11 @@
 package com.emily.cloud.gateway.exception;
 
 
+import com.emily.cloud.gateway.api.FallbackController;
 import com.emily.infrastructure.common.exception.BusinessException;
 import com.emily.infrastructure.common.exception.PrintExceptionInfo;
-import com.emily.infrastructure.logback.common.LoggerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
@@ -27,7 +29,7 @@ import static org.springframework.cloud.gateway.filter.factory.RetryGatewayFilte
  * @create: 2021/01/06
  */
 public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandler {
-
+    private static final Logger logger = LoggerFactory.getLogger(EmilyErrorWebExceptionHandler.class);
     private final ErrorAttributes errorAttributes;
 
     public EmilyErrorWebExceptionHandler(ErrorAttributes errorAttributes, WebProperties.Resources resources, ErrorProperties errorProperties, ApplicationContext applicationContext) {
@@ -53,7 +55,7 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
             errorAttributes = new LinkedHashMap<>();
             if (error instanceof BusinessException) {
                 errorAttributes.put("status", ((BusinessException) error).getStatus());
-                errorAttributes.put("messages", ((BusinessException) error).getErrorMessage());
+                errorAttributes.put("messages", ((BusinessException) error).getMessage());
                 return errorAttributes;
             } else if (error instanceof ResponseStatusException) {
                 errorAttributes.put("status", ((ResponseStatusException) error).getStatus().value());
@@ -103,7 +105,7 @@ public class EmilyErrorWebExceptionHandler extends DefaultErrorWebExceptionHandl
     @Override
     public void logError(ServerRequest request, ServerResponse response, Throwable throwable) {
         String message = throwable.getMessage();
-        LoggerUtils.error(EmilyErrorWebExceptionHandler.class, org.apache.commons.lang3.StringUtils.join(message, "\n\r", PrintExceptionInfo.printErrorInfo(throwable), "\n\r", PrintExceptionInfo.printErrorInfo(throwable.getSuppressed())));
+        logger.error(org.apache.commons.lang3.StringUtils.join(message, "\n\r", PrintExceptionInfo.printErrorInfo(throwable), "\n\r", PrintExceptionInfo.printErrorInfo(throwable.getSuppressed())));
     }
 
 }

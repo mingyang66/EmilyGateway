@@ -36,7 +36,7 @@ spring:
             allowCredentials: false
             # 允许跨域的源（网站域名|IP）,设置*为全部
             allowedOrigins: "*"
-              #- "https://172.30.67.122"
+              #- "https://127.0.0.1"
               #- https://localhost
               #- http://61.152.230.66:80
             # 允许跨域的源正则表达式匹配
@@ -252,21 +252,21 @@ spring:
             response-timeout: 5000
         # RabbitMQ服务配置
         - id: rabbitmq2
-          uri: http://172.30.67.122:15672
+          uri: http://127.0.0.1:15672
           predicates:
             - Path=/rabbitmq/**
             - Weight=rabbitmqGroup, 40
           filters:
             - StripPrefix=1
         - id: rabbitmq3
-          uri: http://172.30.67.122:15673
+          uri: http://127.0.0.1:15673
           predicates:
             - Path=/rabbitmq/**
             - Weight=rabbitmqGroup, 30
           filters:
             - StripPrefix=1
         - id: rabbitmq4
-          uri: http://172.30.67.122:15674
+          uri: http://127.0.0.1:15674
           predicates:
             - Path=/rabbitmq/**
             - Weight=rabbitmqGroup, 30
@@ -274,7 +274,7 @@ spring:
             - StripPrefix=1
         # Consul服务配置
         - id: consul
-          uri: http://172.30.67.122:8500
+          uri: http://127.0.0.1:8500
           predicates:
             - Path=/ui/**,/v1/**
           filters:
@@ -288,7 +288,7 @@ spring:
             # 响应超时时间，单位：毫秒
             response-timeout: 60000
         - id: websocket
-          uri: wss://172.30.67.122:9000/websocket/connect
+          uri: wss://127.0.0.1:9000/websocket/connect
           predicates:
             - Path=/websocket/**
           filters:
