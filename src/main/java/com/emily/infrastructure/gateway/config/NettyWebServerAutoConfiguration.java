@@ -1,84 +1,13 @@
-##### NettyWebServer开启http端口并实现http自动跳转https
+package com.emily.infrastructure.gateway.config;
 
-##### 1.定义配置文件类
-
-```java
-package com.emily.cloud.gateway.config;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.web.server.Shutdown;
-
-/**
- * @program: EmilyGateway
- * @description: Netty服务器配置
- * @create: 2021/01/13
- */
-@ConfigurationProperties(prefix = "server.http")
-public class ServerProperties {
-    /**
-     * 是否开启http端口号
-     */
-    private boolean enable;
-    /**
-     * http端口号
-     */
-    private int port = 8080;
-    /**
-     * 关闭模式
-     */
-    private Shutdown shutdown = Shutdown.IMMEDIATE;
-    /**
-     * http请求是否自动跳转到https
-     */
-    private boolean httpToHttps = true;
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public Shutdown getShutdown() {
-        return shutdown;
-    }
-
-    public void setShutdown(Shutdown shutdown) {
-        this.shutdown = shutdown;
-    }
-
-    public boolean isHttpToHttps() {
-        return httpToHttps;
-    }
-
-    public void setHttpToHttps(boolean httpToHttps) {
-        this.httpToHttps = httpToHttps;
-    }
-}
-
-```
-
-##### 2.配置NettyWebServer服务配置类，实现独立端口及自动跳转https
-
-```java
-package com.emily.cloud.gateway.config;
-
-import com.emily.infrastructure.gateway.config.ServerProperties;import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.HttpHandler;
 import reactor.core.publisher.Mono;
 
@@ -86,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 /**
  * @program: EmilyGateway
@@ -116,24 +46,21 @@ public class NettyWebServerAutoConfiguration {
                 } catch (URISyntaxException e) {
                     return Mono.error(e);
                 }
+                //https://tools.ietf.org/html/rfc7231#section-6.4.2
+                response.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
                 return response.setComplete();
             }));
         } else {
-            factory.getWebServer(httpHandler);
+            webServer = factory.getWebServer(httpHandler);
         }
         webServer.start();
     }
 
     @PreDestroy
     public void stop() {
-        webServer.stop();
+        if (Objects.nonNull(webServer)) {
+            webServer.stop();
+        }
     }
 
 }
-
-```
-
-将上述两个加入系统之中，然后启动就可以实现开启独立http端口及http自动跳转https的能力；
-
-GitHub地址：[https://github.com/mingyang66/EmilyGateway](https://github.com/mingyang66/EmilyGateway)
-

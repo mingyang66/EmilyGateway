@@ -1,0 +1,97 @@
+spring:
+  cloud:
+    loadbalancer:
+      ribbon:
+        # 关闭ribbon客户端负载均衡策略，默认：true
+        enabled: false
+      service-discovery:
+        # 服务发现调用超时时间，默认30S（缓存关闭时有效:DiscoveryClientServiceInstanceListSupplier）
+        timeout: PT30S
+      # 负载均衡缓存从consul上拿到的服务实例信息配置（CachingServiceInstanceListSupplier）
+      cache:
+        # 开启springcloud loadbalancer负载均衡缓存机制，默认：true
+        enabled: true
+        # 缓存过期时间，默认：35 单位：s
+        #ttl: 35
+        # 缓存初始化容量，默认：256
+        #capacity: 256
+        # 使用java8高性能缓存caffeine
+        caffeine:
+          # initialCapacity：初始化容量，默认：-1
+          # ------------基于大小的驱逐策略--------------
+          # maximumSize：最大容量，默认：-1
+          # maximumWeight：权重大小，默认：-1（maximumSize和maximumWeight不可以同时设置）
+          # ------------基于引用的的去捉策略-------------
+          # weakKeys：使用弱引用存储key
+          # weakValues：使用弱引用存储value
+          # softValues：使用软引用存储value
+          # -------------基于时间的驱逐策略---------------
+          # expireAfterAccess：在最后一次访问或者写入后开始计时，在指定的时间后过期。假如一直有请求访问该Key，那么这个缓存将一直不会过期
+          # expireAfterWrite：在最后一次写入缓存后开始计时，在指定的时间后过期
+          # refreshAfterWrite：指定在创建或者最近一次更新缓存后经过固定的时间刷新缓存，
+          # recordStats: 开启统计监控功能
+          spec: initialCapacity=256,maximumSize=1000,expireAfterWrite=35s,recordStats
+  zipkin:
+    # zipkin服务器地址，默认是：http://localhost:9411/
+    base-url: http://127.0.0.1:9411
+    service:
+      # zipkin中展示的服务名称
+      name: ${spring.application.name}
+    sender:
+      # 向zipkin发送spans的方法，默认：web
+      type: web
+  sleuth:
+    reactor:
+      # 链路追踪上下文的侵入性，manual：以最小的侵入性的方式包装每个REACTOR，而无需通过跟踪上下文，为了向后兼容，默认是：DECORATE_ON_EACH
+      instrumentation-type: decorate_on_each
+    sampler:
+      # 采样率，0-1上的小数
+      probability: 1.0
+    redis:
+      # 启用Redis跨域信息传播
+      enabled: true
+      # 服务名
+      remote-service-name: redis
+    integration:
+      # 启用spring集成sleuth instrumentation
+      enabled: true
+    # 断路器
+    circuitbreaker:
+      # seluth是否开启断路器检查，默认：true
+      enabled: true
+      resilience4j:
+        # 关闭resilience4j断路器自动化配置
+        enabled: false
+        blocking:
+          enabled: false
+---
+spring:
+  emily:
+    logback:
+      # 开启日志记录组件
+      enabled: true
+      level: info
+    gateway:
+      circuitbreaker:
+        # 断路器超时时间
+        timeout: 3000
+      # 指定网关路由访问日志记录限制
+      exclude-logging-routes:
+        #- id: rabbitmq2
+         # path: /rabbitmq/**
+        #- id: rabbitmq3
+         # path: /rabbitmq/**
+        #- id: rabbitmq4
+         # path: /rabbitmq/**
+        #- id: consul
+         # path: /ui/**,/v1/**
+      # 指定对外部网络访问限制
+      exclude-externel-routes:
+        - id: rabbitmq2
+          path: /rabbitmq/**
+        - id: rabbitmq3
+          path: /rabbitmq/**
+        - id: rabbitmq4
+          path: /rabbitmq/**
+      # 指定外部网络访问协议限制
+      include-schemas: http,https

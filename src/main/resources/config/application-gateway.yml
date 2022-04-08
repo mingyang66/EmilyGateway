@@ -70,7 +70,7 @@ spring:
             # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
             #- Weight=EmilyFrameworkGroup, 50
             # 根据请求Host断言
-            - Host=172.30.67.**
+            - Host=127.0.0.**
             # 根据请求头断言
             #- Header=Content-Type, ^\w*/\w*$
             # 根据请求Method头断言
@@ -219,7 +219,7 @@ spring:
             # 根据分组及百分比断言请求服务器的权重，group, 8(80%)
             #- Weight=EmilyFrameworkGroup, 50
             # 根据请求Host断言
-            - Host=172.30.67.**
+            - Host=127.0.0.**
             # 根据请求Method断言
             - Method=POST,GET
             # 根据请求参数断言，请求参数在路径后拼接模式
@@ -294,7 +294,7 @@ spring:
           filters:
             #- StripPrefix=1
         - id: file
-          uri: http://172.30.67.123:9000/api/dataDownload
+          uri: http://127.0.0.1:9000/api/dataDownload
           predicates:
             - Path=/file/**
           filters:
