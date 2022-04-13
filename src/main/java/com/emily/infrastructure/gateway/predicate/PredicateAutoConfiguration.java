@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Configuration;
  * @create: 2021/01/23
  */
 @Configuration(proxyBeanMethods = false)
-public class EmilyPredicateAutoConfiguration {
+public class PredicateAutoConfiguration {
     /**
      * 根据内容判定路由是否匹配
      */
     @Bean
-    public EmilyRequestBodyPredicate emilyRequestBodyPredicate(){
-        return new EmilyRequestBodyPredicate();
+    public RequestBodyPredicate requestBodyPredicate(){
+        return new RequestBodyPredicate();
     }
 }

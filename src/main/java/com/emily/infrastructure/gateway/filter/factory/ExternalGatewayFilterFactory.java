@@ -1,10 +1,10 @@
 package com.emily.infrastructure.gateway.filter.factory;
 
-import com.emily.infrastructure.gateway.utils.HttpUtils;
 import com.emily.infrastructure.common.enums.AppHttpStatus;
 import com.emily.infrastructure.common.exception.BusinessException;
 import com.emily.infrastructure.common.utils.RequestUtils;
 import com.emily.infrastructure.common.utils.path.PathMatcher;
+import com.emily.infrastructure.gateway.common.HttpUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * @author Emily
  * @program: EmilyGateway
  * @description: 外部网络访问服务私有过滤器
  * @create: 2021/03/03
  */
-public class EmilyExternalGatewayFilterFactory extends AbstractGatewayFilterFactory<EmilyExternalGatewayFilterFactory.Config> {
+public class ExternalGatewayFilterFactory extends AbstractGatewayFilterFactory<ExternalGatewayFilterFactory.Config> {
     /**
      * 外网限制组件名
      */
@@ -31,7 +32,7 @@ public class EmilyExternalGatewayFilterFactory extends AbstractGatewayFilterFact
     private static final String PATH = "path";
     private int order;
 
-    public EmilyExternalGatewayFilterFactory(int order) {
+    public ExternalGatewayFilterFactory(int order) {
         super(Config.class);
         this.order = order;
     }

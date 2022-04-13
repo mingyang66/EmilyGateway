@@ -16,7 +16,7 @@ import java.util.Set;
  */
 @SuppressWarnings("all")
 @ConfigurationProperties(prefix = "spring.emily.gateway")
-public class EmilyGatewayProperties {
+public class GatewayBeanProperties {
     /**
      * 网关路由访问日志记录限制
      */

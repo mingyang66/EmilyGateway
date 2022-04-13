@@ -1,4 +1,4 @@
-package com.emily.infrastructure.gateway.utils;
+package com.emily.infrastructure.gateway.common;
 
 import io.netty.buffer.ByteBufAllocator;
 import org.apache.commons.lang3.ArrayUtils;

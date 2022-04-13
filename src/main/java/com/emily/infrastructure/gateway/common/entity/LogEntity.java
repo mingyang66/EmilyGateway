@@ -1,7 +1,7 @@
-package com.emily.infrastructure.gateway.entity;
+package com.emily.infrastructure.gateway.common.entity;
 
-import com.emily.infrastructure.gateway.utils.HttpUtils;
-import com.emily.infrastructure.gateway.utils.enums.TraceType;
+import com.emily.infrastructure.gateway.common.HttpUtils;
+import com.emily.infrastructure.gateway.common.enums.TraceType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;

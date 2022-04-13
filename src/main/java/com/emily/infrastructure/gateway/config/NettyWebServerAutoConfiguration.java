@@ -18,13 +18,14 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 
 /**
+ * @author Emily
  * @program: EmilyGateway
  * @description: 开启http端口
  * @create: 2021/01/13
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ServerProperties.class)
-@ConditionalOnProperty(prefix = "server.http", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "server.http", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class NettyWebServerAutoConfiguration {
     @Autowired
     private HttpHandler httpHandler;

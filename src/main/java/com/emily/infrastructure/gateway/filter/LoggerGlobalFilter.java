@@ -1,10 +1,10 @@
 package com.emily.infrastructure.gateway.filter;
 
-import com.emily.infrastructure.gateway.config.EmilyGatewayProperties;
-import com.emily.infrastructure.gateway.entity.LogEntity;
-import com.emily.infrastructure.gateway.utils.DataBufferUtils;
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.common.utils.path.PathMatcher;
+import com.emily.infrastructure.gateway.common.DataBufferUtils;
+import com.emily.infrastructure.gateway.config.GatewayBeanProperties;
+import com.emily.infrastructure.gateway.common.entity.LogEntity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
@@ -41,10 +41,10 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * @create: 2020/12/22
  */
 @SuppressWarnings("all")
-public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
+public class LoggerGlobalFilter implements GlobalFilter, Ordered {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmilyLogGlobalFilter.class);
-    private EmilyGatewayProperties emilyGatewayProperties;
+    private static final Logger logger = LoggerFactory.getLogger(LoggerGlobalFilter.class);
+    private GatewayBeanProperties emilyGatewayProperties;
     /**
      * 响应体解码
      */
@@ -67,7 +67,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
      */
     public static final String EMILY_REQUEST_TIME = "EMILY_REQUEST_TIME";
 
-    public EmilyLogGlobalFilter(EmilyGatewayProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
+    public LoggerGlobalFilter(GatewayBeanProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
         this.emilyGatewayProperties = emilyGatewayProperties;
         this.messageBodyDecoders = messageBodyDecoders.stream()
                 .collect(Collectors.toMap(MessageBodyDecoder::encodingType, identity()));
@@ -109,7 +109,7 @@ public class EmilyLogGlobalFilter implements GlobalFilter, Ordered {
         //获取请求路由
         String path = exchange.getRequest().getPath().value();
         // 获取无需记录日志的路由配置信息
-        EmilyGatewayProperties.Route excludeLoggingRoute = emilyGatewayProperties.getExcludeLoggingRoute(route.getId());
+        GatewayBeanProperties.Route excludeLoggingRoute = emilyGatewayProperties.getExcludeLoggingRoute(route.getId());
         if (Objects.isNull(excludeLoggingRoute)) {
             return false;
         }

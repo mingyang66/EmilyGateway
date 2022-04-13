@@ -1,6 +1,4 @@
-package com.emily.infrastructure.gateway.entity;
-
-import com.emily.infrastructure.common.enums.AppHttpStatus;
+package com.emily.infrastructure.gateway.common.entity;
 
 import java.io.Serializable;
 

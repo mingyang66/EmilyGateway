@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.server.Shutdown;
 
 /**
+ * @author Emily
  * @program: EmilyGateway
  * @description: Netty服务器配置
  * @create: 2021/01/13
@@ -13,7 +14,7 @@ public class ServerProperties {
     /**
      * 是否开启http端口号
      */
-    private boolean enable;
+    private boolean enabled;
     /**
      * http端口号
      */
@@ -27,12 +28,12 @@ public class ServerProperties {
      */
     private boolean httpToHttps = true;
 
-    public boolean isEnable() {
-        return enable;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public int getPort() {

@@ -1,4 +1,4 @@
-package com.emily.infrastructure.gateway.utils.enums;
+package com.emily.infrastructure.gateway.common.enums;
 
 /**
  * @program: EmilyGateway

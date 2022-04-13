@@ -1,9 +1,9 @@
 package com.emily.infrastructure.gateway.filter;
 
-import com.emily.infrastructure.gateway.config.EmilyGatewayProperties;
-import com.emily.infrastructure.gateway.utils.HttpUtils;
 import com.emily.infrastructure.common.enums.AppHttpStatus;
 import com.emily.infrastructure.common.exception.BusinessException;
+import com.emily.infrastructure.gateway.common.HttpUtils;
+import com.emily.infrastructure.gateway.config.GatewayBeanProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -16,13 +16,13 @@ import reactor.core.publisher.Mono;
  * @author:
  * @create: 2021/03/05
  */
-public class EmilySchemaGlobalFilter implements GlobalFilter, Ordered {
+public class SchemaGlobalFilter implements GlobalFilter, Ordered {
 
     private int order;
 
-    private EmilyGatewayProperties emilyGatewayProperties;
+    private GatewayBeanProperties emilyGatewayProperties;
 
-    public EmilySchemaGlobalFilter(EmilyGatewayProperties emilyGatewayProperties) {
+    public SchemaGlobalFilter(GatewayBeanProperties emilyGatewayProperties) {
         this.emilyGatewayProperties = emilyGatewayProperties;
     }
 

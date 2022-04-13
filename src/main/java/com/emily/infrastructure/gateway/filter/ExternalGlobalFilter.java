@@ -1,11 +1,11 @@
 package com.emily.infrastructure.gateway.filter;
 
-import com.emily.infrastructure.gateway.config.EmilyGatewayProperties;
-import com.emily.infrastructure.gateway.utils.HttpUtils;
 import com.emily.infrastructure.common.enums.AppHttpStatus;
 import com.emily.infrastructure.common.exception.BusinessException;
 import com.emily.infrastructure.common.utils.RequestUtils;
 import com.emily.infrastructure.common.utils.path.PathMatcher;
+import com.emily.infrastructure.gateway.common.HttpUtils;
+import com.emily.infrastructure.gateway.config.GatewayBeanProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.Route;
@@ -23,15 +23,15 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * @create: 2021/03/03
  */
 @SuppressWarnings("all")
-public class EmilyExternalGlobalFilter implements GlobalFilter, Ordered {
+public class ExternalGlobalFilter implements GlobalFilter, Ordered {
 
-    private EmilyGatewayProperties emilyGatewayProperties;
+    private GatewayBeanProperties emilyGatewayProperties;
     /**
      * 网关过滤器执行顺序
      */
     private int order;
 
-    public EmilyExternalGlobalFilter(EmilyGatewayProperties emilyGatewayProperties) {
+    public ExternalGlobalFilter(GatewayBeanProperties emilyGatewayProperties) {
         this.emilyGatewayProperties = emilyGatewayProperties;
     }
 
@@ -56,7 +56,7 @@ public class EmilyExternalGlobalFilter implements GlobalFilter, Ordered {
         //获取网关路由配置信息
         Route route = exchange.getAttribute(GATEWAY_ROUTE_ATTR);
         // 获取无需记录日志的路由配置信息
-        EmilyGatewayProperties.External excludeExternelRoute = emilyGatewayProperties.getExcludeExternelRoute(route.getId());
+        GatewayBeanProperties.External excludeExternelRoute = emilyGatewayProperties.getExcludeExternelRoute(route.getId());
         // 路由ID未配置，则不限制
         if (Objects.isNull(excludeExternelRoute)) {
             return false;

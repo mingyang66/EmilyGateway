@@ -1,4 +1,4 @@
-package com.emily.infrastructure.gateway.utils;
+package com.emily.infrastructure.gateway.common;
 
 import com.emily.infrastructure.common.enums.AppHttpStatus;
 import com.emily.infrastructure.common.exception.BusinessException;
