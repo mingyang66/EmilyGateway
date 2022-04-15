@@ -25,7 +25,7 @@ spring:
         # 分割符，默认：","
         profile-separator: '/'
         # ACL Token
-        acl-token: ${JAVA_ACL_TOKEN}
+        acl-token: ${TOKEN}
       discovery:
         # 将服务注册到consul中，默认：true
         register: true
@@ -40,17 +40,17 @@ spring:
         # 表示注册服务时使用IP而不是hostname，默认：false
         prefer-ip-address: true
         # 访问服务时要使用的IP地址（还必须设置要使用的prefer-ip-address为true）--使用docker时设置
-        ip-address: ${JAVA_LOCAL_IP}
+        ip-address: ${IP}
         # 注册服务的端口（默认为监听端口）--使用docker时设置
-        port: ${JAVA_LOCAL_PORT}
+        port: ${PORT}
         # ACL Token
-        acl-token: ${JAVA_ACL_TOKEN}
+        acl-token: ${TOKEN}
         # actuator监控服务后缀
         management-suffix: management
         # 注册监控服务时的tag
         management-tags: emily=gateway-management
         # 注册actuator监控服务端口（默认是：management port）--使用docker时设置
-        management-port: ${JAVA_LOCAL_MANAGEMENT_PORT}
+        management-port: ${MANAGEMENT_PORT}
         # 注册健康检查到consul,在服务开发过程中有用
         register-health-check: true
         # 健康检查路径，默认：/actuator/health
@@ -66,6 +66,6 @@ spring:
         # 监视consul配置文件的超时时间，默认：2秒
         catalog-services-watch-timeout: 2
       # consul agent主机名，默认：localhost
-      host: ${JAVA_LOCAL_IP}
+      host: ${IP}
       # consul agent端口号，默认：8500
       port: 8500
