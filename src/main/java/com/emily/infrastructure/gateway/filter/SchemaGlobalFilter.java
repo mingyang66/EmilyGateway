@@ -20,15 +20,15 @@ public class SchemaGlobalFilter implements GlobalFilter, Ordered {
 
     private int order;
 
-    private GatewayBeanProperties emilyGatewayProperties;
+    private GatewayBeanProperties gatewayBeanProperties;
 
-    public SchemaGlobalFilter(GatewayBeanProperties emilyGatewayProperties) {
-        this.emilyGatewayProperties = emilyGatewayProperties;
+    public SchemaGlobalFilter(GatewayBeanProperties gatewayBeanProperties) {
+        this.gatewayBeanProperties = gatewayBeanProperties;
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (emilyGatewayProperties.getIncludeSchemas().contains(HttpUtils.getSchema(exchange.getRequest()))) {
+        if (gatewayBeanProperties.getIncludeSchemas().contains(HttpUtils.getSchema(exchange.getRequest()))) {
             return chain.filter(exchange);
         }
         throw new BusinessException(AppHttpStatus.SERVER_ILLEGAL_ACCESS);

@@ -3,8 +3,8 @@ package com.emily.infrastructure.gateway.filter;
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.common.utils.path.PathMatcher;
 import com.emily.infrastructure.gateway.common.DataBufferUtils;
-import com.emily.infrastructure.gateway.config.GatewayBeanProperties;
 import com.emily.infrastructure.gateway.common.entity.LogEntity;
+import com.emily.infrastructure.gateway.config.GatewayBeanProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
@@ -40,7 +40,6 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * @description: 网关全局过滤器，拦截请求响应日志
  * @create: 2020/12/22
  */
-@SuppressWarnings("all")
 public class LoggerGlobalFilter implements GlobalFilter, Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerGlobalFilter.class);

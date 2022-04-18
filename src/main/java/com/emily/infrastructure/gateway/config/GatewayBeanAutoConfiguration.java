@@ -51,31 +51,31 @@ public class GatewayBeanAutoConfiguration {
      * 网关支持的协议过滤器
      */
     @Bean
-    public SchemaGlobalFilter emilySchemaGlobalFilter(GatewayBeanProperties emilyGatewayProperties){
-        SchemaGlobalFilter emilySchemaGlobalFilter = new SchemaGlobalFilter(emilyGatewayProperties);
-        emilySchemaGlobalFilter.setOrder(AdaptCachedBodyGlobalFilter.HIGHEST_PRECEDENCE+2000);
-        return emilySchemaGlobalFilter;
+    public SchemaGlobalFilter emilySchemaGlobalFilter(GatewayBeanProperties gatewayBeanProperties){
+        SchemaGlobalFilter schemaGlobalFilter = new SchemaGlobalFilter(gatewayBeanProperties);
+        schemaGlobalFilter.setOrder(AdaptCachedBodyGlobalFilter.HIGHEST_PRECEDENCE+2000);
+        return schemaGlobalFilter;
     }
     /**
      * 限制指定路由只能内网访问过滤器
      */
     @Bean
-    public ExternalGlobalFilter emilyExternalGlobalFilter(GatewayBeanProperties emilyGatewayProperties) {
-        ExternalGlobalFilter emilyExternalGlobalFilter = new ExternalGlobalFilter(emilyGatewayProperties);
+    public ExternalGlobalFilter emilyExternalGlobalFilter(GatewayBeanProperties gatewayBeanProperties) {
+        ExternalGlobalFilter externalGlobalFilter = new ExternalGlobalFilter(gatewayBeanProperties);
         //将限制放在将路由转换到URL过滤器之后
-        emilyExternalGlobalFilter.setOrder(RouteToRequestUrlFilter.HIGHEST_PRECEDENCE + 3000);
-        return emilyExternalGlobalFilter;
+        externalGlobalFilter.setOrder(RouteToRequestUrlFilter.HIGHEST_PRECEDENCE + 3000);
+        return externalGlobalFilter;
     }
 
     /**
      * 注册请求响应日志拦截全局过滤器
      */
     @Bean
-    public LoggerGlobalFilter emilyLogGlobalFilter(GatewayBeanProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
-        LoggerGlobalFilter emilyLogGlobalFilter = new LoggerGlobalFilter(emilyGatewayProperties, messageBodyDecoders);
+    public LoggerGlobalFilter emilyLogGlobalFilter(GatewayBeanProperties gatewayBeanProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
+        LoggerGlobalFilter loggerGlobalFilter = new LoggerGlobalFilter(gatewayBeanProperties, messageBodyDecoders);
         //设置优先级顺序在{@link org.springframework.cloud.gateway.filter.NettyWriteResponseFilter}(-1)过滤器之后，方便获取到真实的请求地址
-        emilyLogGlobalFilter.setOrder(NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER - 1);
-        return emilyLogGlobalFilter;
+        loggerGlobalFilter.setOrder(NettyWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER - 1);
+        return loggerGlobalFilter;
     }
 
     /**
@@ -85,9 +85,9 @@ public class GatewayBeanAutoConfiguration {
      */
     @Bean
     public RetryGlobalFilter emilyRetryGlobalFilter() {
-        RetryGlobalFilter emilyRetryGlobalFilter = new RetryGlobalFilter();
-        emilyRetryGlobalFilter.setOrder(ReactiveLoadBalancerClientFilter.LOAD_BALANCER_CLIENT_FILTER_ORDER - 1);
-        return emilyRetryGlobalFilter;
+        RetryGlobalFilter retryGlobalFilter = new RetryGlobalFilter();
+        retryGlobalFilter.setOrder(ReactiveLoadBalancerClientFilter.LOAD_BALANCER_CLIENT_FILTER_ORDER - 1);
+        return retryGlobalFilter;
     }
 
     /**

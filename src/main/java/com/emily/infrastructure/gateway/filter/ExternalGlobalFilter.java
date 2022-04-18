@@ -22,7 +22,6 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * @description: 路由内网路由限制全局过滤器
  * @create: 2021/03/03
  */
-@SuppressWarnings("all")
 public class ExternalGlobalFilter implements GlobalFilter, Ordered {
 
     private GatewayBeanProperties emilyGatewayProperties;
