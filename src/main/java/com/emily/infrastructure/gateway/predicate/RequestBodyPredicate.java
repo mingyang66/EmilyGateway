@@ -3,6 +3,7 @@ package com.emily.infrastructure.gateway.predicate;
 import java.util.function.Predicate;
 
 /**
+ * @author Emily
  * @program: EmilyGateway
  * @description: 自定义断言
  * @create: 2021/01/23

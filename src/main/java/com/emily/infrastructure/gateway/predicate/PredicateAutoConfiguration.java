@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * @author Emily
  * @program: EmilyGateway
  * @description: 断言自动化配置类
  * @create: 2021/01/23
