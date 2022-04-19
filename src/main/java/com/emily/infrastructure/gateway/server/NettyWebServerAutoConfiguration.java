@@ -1,4 +1,4 @@
-package com.emily.infrastructure.gateway.config;
+package com.emily.infrastructure.gateway.server;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
