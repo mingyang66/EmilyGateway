@@ -14,6 +14,10 @@ spring:
             - Path=/emily/api/**
             # 根据请求Method头断言
             - Method=POST,GET
+            #- After=2022-04-20T15:35:08.721398+08:00[Asia/Shanghai]
+            #- Before=2022-04-20T15:35:08.721398+08:00[Asia/Shanghai]
+            #- Between=2022-04-20T15:35:08.721398+08:00[Asia/Shanghai],2022-04-20T16:35:08.721398+08:00[Asia/Shanghai]
+            - RemoteAddr=192.168.0.108/24,127.0.0.1
           filters:
             # 删除前缀过滤器
             - StripPrefix=1
