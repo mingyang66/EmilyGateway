@@ -21,6 +21,14 @@ spring:
           filters:
             # 删除前缀过滤器
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/circuitBreaker/fallback
+                  # 根据返回的状态码熔断降级
+                statusCodes:
+                  - 500
+                  - 404
         # 自定义路由ID,保持唯一（基于指定url权重的网关配置）
         - id: weight-high
           #目标服务地址

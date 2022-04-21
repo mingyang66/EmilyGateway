@@ -1,4 +1,4 @@
-package com.emily.infrastructure.gateway.server;
+package com.emily.infrastructure.gateway.config.server;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.server.Shutdown;
