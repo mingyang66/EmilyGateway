@@ -21,11 +21,14 @@ spring:
           filters:
             # 删除前缀过滤器
             - StripPrefix=1
+            # 断路器
             - name: CircuitBreaker
               args:
-                name: myCircuitBreaker
+                # 断路器名称
+                name: circuitBreaker
+                # 异常调整地址
                 fallbackUri: forward:/circuitBreaker/fallback
-                  # 根据返回的状态码熔断降级
+                # 根据返回的状态码熔断降级
                 statusCodes:
                   - 500
                   - 404
