@@ -15,6 +15,6 @@ public class CircuitBreakerController {
 
     @GetMapping("fallback")
     public String fallback(){
-        return "您的应用被老鹰叼走了，一会再来看吧";
+        return "Service Unavailable";
     }
 }

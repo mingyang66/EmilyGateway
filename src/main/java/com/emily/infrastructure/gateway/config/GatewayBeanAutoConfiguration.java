@@ -40,7 +40,7 @@ public class GatewayBeanAutoConfiguration {
     /**
      * 让所有请求的body都做body cache
      */
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         gatewayProperties.getRoutes().forEach(routeDefinition -> {
             adaptCachedBodyGlobalFilter.onApplicationEvent(new EnableBodyCachingEvent(this, routeDefinition.getId()));
@@ -50,7 +50,7 @@ public class GatewayBeanAutoConfiguration {
     /**
      * 网关支持的协议过滤器
      */
-    @Bean
+   // @Bean
     public SchemaGlobalFilter schemaGlobalFilter(GatewayBeanProperties gatewayBeanProperties){
         SchemaGlobalFilter schemaGlobalFilter = new SchemaGlobalFilter(gatewayBeanProperties);
         schemaGlobalFilter.setOrder(AdaptCachedBodyGlobalFilter.HIGHEST_PRECEDENCE+2000);
@@ -59,7 +59,7 @@ public class GatewayBeanAutoConfiguration {
     /**
      * 限制指定路由只能内网访问过滤器
      */
-    @Bean
+    //@Bean
     public ExternalGlobalFilter externalGlobalFilter(GatewayBeanProperties gatewayBeanProperties) {
         ExternalGlobalFilter externalGlobalFilter = new ExternalGlobalFilter(gatewayBeanProperties);
         //将限制放在将路由转换到URL过滤器之后
@@ -70,7 +70,7 @@ public class GatewayBeanAutoConfiguration {
     /**
      * 注册请求响应日志拦截全局过滤器
      */
-    @Bean
+    //@Bean
     public LoggerGlobalFilter loggerGlobalFilter(GatewayBeanProperties gatewayBeanProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
         LoggerGlobalFilter loggerGlobalFilter = new LoggerGlobalFilter(gatewayBeanProperties, messageBodyDecoders);
         //设置优先级顺序在{@link org.springframework.cloud.gateway.filter.NettyWriteResponseFilter}(-1)过滤器之后，方便获取到真实的请求地址
@@ -83,7 +83,7 @@ public class GatewayBeanAutoConfiguration {
      *
      * @return
      */
-    @Bean
+    //@Bean
     public RetryGlobalFilter retryGlobalFilter() {
         RetryGlobalFilter retryGlobalFilter = new RetryGlobalFilter();
         retryGlobalFilter.setOrder(ReactiveLoadBalancerClientFilter.LOAD_BALANCER_CLIENT_FILTER_ORDER - 1);
@@ -93,8 +93,8 @@ public class GatewayBeanAutoConfiguration {
     /**
      * 自定义私有限制外网访问过滤器
      */
-    @Bean
-    @ConditionalOnEnabledFilter
+    //@Bean
+    //@ConditionalOnEnabledFilter
     public ExternalGatewayFilterFactory externalGatewayFilterFactory() {
         //将限制放在将路由转换到URL过滤器之后
         return new ExternalGatewayFilterFactory(RouteToRequestUrlFilter.ROUTE_TO_URL_FILTER_ORDER+2);
@@ -103,7 +103,7 @@ public class GatewayBeanAutoConfiguration {
     /**
      * 限流key
      */
-    @Bean(IpAddressKeyResolver.BEAN_NAME)
+    //@Bean(IpAddressKeyResolver.BEAN_NAME)
     public IpAddressKeyResolver ipAddressKeyResolver() {
         return new IpAddressKeyResolver();
     }

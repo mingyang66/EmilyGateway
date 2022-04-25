@@ -18,6 +18,7 @@ import java.util.Objects;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR;
 
 /**
+ * @author Emily
  * @program: EmilyGateway
  * @description: 路由内网路由限制全局过滤器
  * @create: 2021/03/03
