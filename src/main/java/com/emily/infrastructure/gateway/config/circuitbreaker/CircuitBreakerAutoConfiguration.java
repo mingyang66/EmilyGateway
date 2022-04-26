@@ -1,9 +1,9 @@
 package com.emily.infrastructure.gateway.config.circuitbreaker;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
-import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
@@ -18,13 +18,16 @@ import java.time.Duration;
  * @CreateDate :  Created in 2022/4/20 5:28 下午
  */
 @Configuration
+@EnableConfigurationProperties(CircuitBreakerProperties.class)
+@ConditionalOnProperty(prefix = CircuitBreakerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class CircuitBreakerAutoConfiguration {
     /**
      * 断路器默认配置
+     *
      * @return
      */
     @Bean
-    public Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer(CircuitBreakerRegistry circuitBreakerRegistry, TimeLimiterRegistry timeLimiterRegistry) {
+    public Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer() {
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 // 滑动窗口的类型为时间窗口，默认：COUNT_BASED
                 .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.TIME_BASED)
@@ -58,7 +61,7 @@ public class CircuitBreakerAutoConfiguration {
                 .build();
 
 
-        return factory -> factory.configureDefault(id-> new Resilience4JConfigBuilder(id)
+        return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
                 .circuitBreakerConfig(circuitBreakerConfig)
                 .timeLimiterConfig(TimeLimiterConfig.custom()
                         .timeoutDuration(Duration.ofSeconds(1))

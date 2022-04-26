@@ -1,6 +1,5 @@
 package com.emily.infrastructure.gateway.controller;
 
-import com.emily.infrastructure.common.exception.PrintExceptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;

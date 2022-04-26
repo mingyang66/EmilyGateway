@@ -9,8 +9,12 @@ import org.springframework.boot.web.server.Shutdown;
  * @description: Netty服务器配置
  * @create: 2021/01/13
  */
-@ConfigurationProperties(prefix = "server.http")
+@ConfigurationProperties(prefix = ServerProperties.PREFIX)
 public class ServerProperties {
+    /**
+     * 默认前缀
+     */
+    public static final String PREFIX = "server.http";
     /**
      * 是否开启http端口号
      */

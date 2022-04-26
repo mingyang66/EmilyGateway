@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ServerProperties.class)
-@ConditionalOnProperty(prefix = "server.http", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = ServerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class NettyWebServerAutoConfiguration {
     @Autowired
     private HttpHandler httpHandler;
