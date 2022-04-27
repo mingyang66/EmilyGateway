@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.6</version>
+        <version>2.6.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.emily.cloud</groupId>
-    <artifactId>emilygateway</artifactId>
+    <groupId>com.emily.infrastructure</groupId>
+    <artifactId>gateway</artifactId>
     <version>1.0.3</version>
     <name>EmilyGateway</name>
-    <description>Emily网关</description>
+    <description>Gateway网关</description>
 
     <properties>
         <!--JDK版本-->

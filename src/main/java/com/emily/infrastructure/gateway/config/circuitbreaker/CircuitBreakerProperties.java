@@ -12,7 +12,7 @@ public class CircuitBreakerProperties {
     /**
      * 前缀
      */
-    public static final String PREFIX = "spring.emily.gateway.circuitBreaker";
+    public static final String PREFIX = "spring.emily.gateway.circuit-breaker";
     /**
      * 断路器配置类开关，默认：true
      */

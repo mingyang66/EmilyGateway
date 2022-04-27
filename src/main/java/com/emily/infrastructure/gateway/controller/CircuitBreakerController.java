@@ -22,9 +22,9 @@ public class CircuitBreakerController {
 
     @GetMapping("fallback")
     public String fallback(ServerWebExchange exchange){
-        Exception exception = exchange.getAttribute(ServerWebExchangeUtils.CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR);
+        Throwable throwable = exchange.getAttribute(ServerWebExchangeUtils.CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR);
         ServerWebExchange delegate = ((ServerWebExchangeDecorator) exchange).getDelegate();
-        logger.error("服务调用失败，URL={}", delegate.getRequest().getURI(), exception);
+        logger.error("服务调用失败，URL={}", delegate.getRequest().getURI(), throwable);
         return "Service Unavailable";
     }
 }

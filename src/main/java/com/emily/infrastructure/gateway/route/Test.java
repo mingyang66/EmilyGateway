@@ -9,9 +9,9 @@ import reactor.core.publisher.Mono;
  */
 public class Test {
     public static void main(String[] args) {
-        Mono.just(1/0).onErrorResume(throwable -> {
-            System.out.println(throwable.getMessage());
-            return Mono.error(throwable);
-        });
+       Mono.just(23/0)
+               .doOnSuccess(integer -> System.out.println(integer))
+               .doOnError(throwable -> System.out.println(throwable))
+               .onErrorResume(throwable -> Mono.error(throwable));
     }
 }

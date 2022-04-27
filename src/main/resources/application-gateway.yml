@@ -26,8 +26,10 @@ spring:
               args:
                 # 断路器名称
                 name: circuitBreaker
-                # 异常调整地址
+                # 异常熔断地址
                 fallbackUri: forward:/circuitBreaker/fallback
+                # 无熔断地址时是否返回error错误
+                resumeWithoutError: false
                 # 根据返回的状态码熔断降级
                 statusCodes:
                   - 500
