@@ -1,7 +1,7 @@
 package com.emily.infrastructure.gateway.filter;
 
 import com.emily.infrastructure.common.utils.json.JSONUtils;
-import com.emily.infrastructure.gateway.common.entity.LogEntity;
+import com.emily.infrastructure.gateway.common.entity.BaseLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -34,7 +34,7 @@ public class RetryGlobalFilter implements GlobalFilter, Ordered {
             // 获取接口重试次数
             int iteration = exchange.getAttributeOrDefault(RETRY_ITERATION_KEY, 0);
             if (iteration > 0) {
-                LogEntity logEntity = exchange.getAttributeOrDefault(LoggerGlobalFilter.EMILY_LOG_ENTITY, new LogEntity());
+                BaseLogger logEntity = exchange.getAttributeOrDefault(LoggerGlobalFilter.EMILY_LOG_ENTITY, new BaseLogger());
                 // 设置请求URL
                 URI uri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
                 logEntity.setUrl(uri == null ? null : uri.toString());

@@ -14,7 +14,7 @@ import java.util.UUID;
  * @description: 日志实体类
  * @create: 2021/01/15
  */
-public class LogEntity implements Serializable {
+public class BaseLogger implements Serializable {
     /**
      * 唯一标识
      */
@@ -60,10 +60,10 @@ public class LogEntity implements Serializable {
      */
     private long time;
 
-    public LogEntity() {
+    public BaseLogger() {
     }
 
-    public LogEntity(ServerWebExchange exchange) {
+    public BaseLogger(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
         this.setcId(request.getId());
         this.setMethod(HttpUtils.getMethod(request));

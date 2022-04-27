@@ -64,3 +64,25 @@ spring:
           filters:
             # 删除前缀过滤器
             - StripPrefix=1
+        # RabbitMQ服务配置
+        - id: rabbitmq2
+          uri: http://10.10.181.41:15672
+          predicates:
+            - Path=/rabbitmq/**
+            - Weight=rabbitmqGroup, 40
+          filters:
+            - StripPrefix=1
+        - id: rabbitmq3
+          uri: http://x.x.x.42:15672
+          predicates:
+            - Path=/rabbitmq/**
+            - Weight=rabbitmqGroup, 30
+          filters:
+            - StripPrefix=1
+        - id: rabbitmq4
+          uri: http://x.x.x.43:15672
+          predicates:
+            - Path=/rabbitmq/**
+            - Weight=rabbitmqGroup, 30
+          filters:
+            - StripPrefix=1

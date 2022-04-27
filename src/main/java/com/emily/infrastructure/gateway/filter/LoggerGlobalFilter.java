@@ -3,7 +3,7 @@ package com.emily.infrastructure.gateway.filter;
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.common.utils.path.PathMatcher;
 import com.emily.infrastructure.gateway.common.DataBufferUtils;
-import com.emily.infrastructure.gateway.common.entity.LogEntity;
+import com.emily.infrastructure.gateway.common.entity.BaseLogger;
 import com.emily.infrastructure.gateway.config.GatewayBeanProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +44,8 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 public class LoggerGlobalFilter implements GlobalFilter, Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerGlobalFilter.class);
-    private GatewayBeanProperties emilyGatewayProperties;
+
+    private GatewayBeanProperties properties;
     /**
      * 响应体解码
      */
@@ -67,8 +68,8 @@ public class LoggerGlobalFilter implements GlobalFilter, Ordered {
      */
     public static final String EMILY_REQUEST_TIME = "EMILY_REQUEST_TIME";
 
-    public LoggerGlobalFilter(GatewayBeanProperties emilyGatewayProperties, Set<MessageBodyDecoder> messageBodyDecoders) {
-        this.emilyGatewayProperties = emilyGatewayProperties;
+    public LoggerGlobalFilter(GatewayBeanProperties properties, Set<MessageBodyDecoder> messageBodyDecoders) {
+        this.properties = properties;
         this.messageBodyDecoders = messageBodyDecoders.stream()
                 .collect(Collectors.toMap(MessageBodyDecoder::encodingType, identity()));
     }
@@ -79,7 +80,7 @@ public class LoggerGlobalFilter implements GlobalFilter, Ordered {
         if (determineLogLimit(exchange)) {
             return chain.filter(exchange);
         }
-        exchange.getAttributes().put(EMILY_LOG_ENTITY, new LogEntity(exchange));
+        exchange.getAttributes().put(EMILY_LOG_ENTITY, new BaseLogger(exchange));
         exchange.getAttributes().put(EMILY_REQUEST_TIME, System.currentTimeMillis());
         /**
          * 获取响应结果有两种方案：
@@ -109,7 +110,7 @@ public class LoggerGlobalFilter implements GlobalFilter, Ordered {
         //获取请求路由
         String path = exchange.getRequest().getPath().value();
         // 获取无需记录日志的路由配置信息
-        GatewayBeanProperties.Route excludeLoggingRoute = emilyGatewayProperties.getExcludeLoggingRoute(route.getId());
+        GatewayBeanProperties.Route excludeLoggingRoute = properties.getExcludeLoggingRoute(route.getId());
         if (Objects.isNull(excludeLoggingRoute)) {
             return false;
         }
@@ -130,15 +131,15 @@ public class LoggerGlobalFilter implements GlobalFilter, Ordered {
      * @param exchange
      */
     protected void doLogError(ServerWebExchange exchange, Throwable throwable) {
-        LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
+        BaseLogger baseLogger = exchange.getAttribute(EMILY_LOG_ENTITY);
         // 设置请求URL
-        logEntity.setUrl(exchange.getAttributes().containsKey(GATEWAY_REQUEST_URL_ATTR) ? exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString() : exchange.getRequest().getURI().toString());
+        baseLogger.setUrl(exchange.getAttributes().containsKey(GATEWAY_REQUEST_URL_ATTR) ? exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString() : exchange.getRequest().getURI().toString());
         // 设置响应时间
-        logEntity.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
+        baseLogger.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
         // 设置返回的错误信息
-        logEntity.setResponseBody(throwable.getMessage());
+        baseLogger.setResponseBody(throwable.getMessage());
         // 记录日志信息
-        logger.error(JSONUtils.toJSONString(logEntity));
+        logger.error(JSONUtils.toJSONString(baseLogger));
     }
 
     /**
@@ -148,13 +149,13 @@ public class LoggerGlobalFilter implements GlobalFilter, Ordered {
      * @return
      */
     protected Mono<Void> doLogSuccess(ServerWebExchange exchange, Object args) {
-        LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
+        BaseLogger baseLogger = exchange.getAttribute(EMILY_LOG_ENTITY);
         // 设置请求URL
-        logEntity.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
+        baseLogger.setUrl(exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString());
         // 设置响应时间
-        logEntity.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
+        baseLogger.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(EMILY_REQUEST_TIME, 0L));
         // 记录日志信息
-        logger.info(JSONUtils.toJSONString(logEntity));
+        logger.info(JSONUtils.toJSONString(baseLogger));
         return Mono.empty();
     }
 
@@ -182,7 +183,7 @@ public class LoggerGlobalFilter implements GlobalFilter, Ordered {
                         // 提取响应body
                         String bodyString = extractBody(exchange, originalBytes);
                         // 获取日志实体类
-                        LogEntity logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
+                        BaseLogger logEntity = exchange.getAttribute(EMILY_LOG_ENTITY);
                         // 设置响应body
                         logEntity.setResponseBody(convertBody(exchange, bodyString));
                         return dataBufferFactory.wrap(originalBytes);
@@ -212,7 +213,7 @@ public class LoggerGlobalFilter implements GlobalFilter, Ordered {
      * 提取响应body
      *
      * @param exchange 网关上下文
-     * @param allBytes 字节数组
+     * @param originalBytes 字节数组
      * @return 响应结果
      */
     protected String extractBody(ServerWebExchange exchange, byte[] originalBytes) {

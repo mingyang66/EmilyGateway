@@ -17,4 +17,24 @@ public class CircuitBreakerProperties {
      * 断路器配置类开关，默认：true
      */
     private boolean enabled = true;
+    /**
+     * 超时时间，默认：1s
+     */
+    private long timeout = 1;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
 }

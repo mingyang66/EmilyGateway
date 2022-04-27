@@ -27,7 +27,7 @@ public class CircuitBreakerAutoConfiguration {
      * @return
      */
     @Bean
-    public Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer() {
+    public Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer(CircuitBreakerProperties properties) {
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 // 滑动窗口的类型为时间窗口，默认：COUNT_BASED
                 .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.TIME_BASED)
@@ -64,7 +64,7 @@ public class CircuitBreakerAutoConfiguration {
         return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
                 .circuitBreakerConfig(circuitBreakerConfig)
                 .timeLimiterConfig(TimeLimiterConfig.custom()
-                        .timeoutDuration(Duration.ofSeconds(1))
+                        .timeoutDuration(Duration.ofSeconds(properties.getTimeout()))
                         .cancelRunningFuture(true).build())
                 .build());
 
