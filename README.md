@@ -1,5 +1,8 @@
-# EmilyGateway
-springcloud网关
+##### 目标
+
+- 配置Retry过滤器获取Reqeust参数
+
+#### springcloud gateway网关
 
 - 支持consul做为配置中心
 

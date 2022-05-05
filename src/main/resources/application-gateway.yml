@@ -13,7 +13,7 @@ spring:
             # 根据路由断言请求的目标服务器
             - Path=/emily/api/**
             # 根据请求Method头断言
-            - Method=POST,GET
+            - Method=POST,GET,OPTIONS
             #- After=2022-04-20T15:35:08.721398+08:00[Asia/Shanghai]
             #- Before=2022-04-20T15:35:08.721398+08:00[Asia/Shanghai]
             #- Between=2022-04-20T15:35:08.721398+08:00[Asia/Shanghai],2022-04-20T16:35:08.721398+08:00[Asia/Shanghai]
@@ -21,6 +21,10 @@ spring:
           filters:
             # 删除前缀过滤器
             - StripPrefix=1
+            # 记录日志
+            - name: RecordLogger
+              args:
+                enabled: true
             # 断路器
             - name: CircuitBreaker
               args:
@@ -34,6 +38,9 @@ spring:
                 statusCodes:
                   - 500
                   - 404
+            - name: CacheRequestBody
+              args:
+                bodyClass: java.lang.String
         # 自定义路由ID,保持唯一（基于指定url权重的网关配置）
         - id: weight-high
           #目标服务地址
@@ -73,14 +80,14 @@ spring:
           filters:
             - StripPrefix=1
         - id: rabbitmq3
-          uri: http://x.x.x.42:15672
+          uri: http://10.10.181.42:15672
           predicates:
             - Path=/rabbitmq/**
             - Weight=rabbitmqGroup, 30
           filters:
             - StripPrefix=1
         - id: rabbitmq4
-          uri: http://x.x.x.43:15672
+          uri: http://10.10.181.43:15672
           predicates:
             - Path=/rabbitmq/**
             - Weight=rabbitmqGroup, 30

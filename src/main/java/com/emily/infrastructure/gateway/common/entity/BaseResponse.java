@@ -69,4 +69,11 @@ public class BaseResponse<T> implements Serializable {
     public void setTime(long time) {
         this.time = time;
     }
+
+    public static BaseResponse build(int status, String message) {
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setStatus(status);
+        baseResponse.setMessage(message);
+        return baseResponse;
+    }
 }

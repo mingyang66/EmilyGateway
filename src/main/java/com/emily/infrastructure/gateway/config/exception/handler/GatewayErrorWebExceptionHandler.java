@@ -1,5 +1,6 @@
 package com.emily.infrastructure.gateway.config.exception.handler;
 
+import com.emily.infrastructure.common.exception.PrintExceptionInfo;
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.gateway.common.entity.BaseResponse;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
@@ -31,11 +32,14 @@ public class GatewayErrorWebExceptionHandler implements ErrorWebExceptionHandler
         ServerHttpResponse response = exchange.getResponse();
         BaseResponse baseResponse = new BaseResponse();
         if (ex instanceof ResponseStatusException) {
-            baseResponse.setStatus(((ResponseStatusException) ex).getStatus().value());
-            baseResponse.setMessage(((ResponseStatusException) ex).getReason());
+            ResponseStatusException exception = (ResponseStatusException) ex;
+            baseResponse.setStatus(exception.getStatus().value());
+            baseResponse.setMessage(exception.getMessage());
+            System.out.println(PrintExceptionInfo.printErrorInfo(exception));
         } else if (ex instanceof RestClientResponseException) {
-            baseResponse.setStatus(((RestClientResponseException) ex).getRawStatusCode());
-            baseResponse.setMessage(((RestClientResponseException) ex).getStatusText());
+            RestClientResponseException exception = (RestClientResponseException)ex;
+            baseResponse.setStatus(exception.getRawStatusCode());
+            baseResponse.setMessage(exception.getStatusText());
         } else {
             baseResponse.setStatus(201);
             baseResponse.setMessage(ex.getMessage());

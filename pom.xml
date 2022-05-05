@@ -23,8 +23,6 @@
         <maven.compiler.target>11</maven.compiler.target>
         <!--Springcloud版本-->
         <spring.cloud.version>3.1.0</spring.cloud.version>
-        <!--gateway网关-->
-        <spring.gateway.version>3.1.1</spring.gateway.version>
         <!--底层库版本-->
         <emily.infrastructure.version>4.0.10</emily.infrastructure.version>
     </properties>
@@ -56,7 +54,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
-            <version>${spring.gateway.version}</version>
+            <version>${spring.cloud.version}</version>
         </dependency>
         <!--consul-服务发现-->
         <dependency>

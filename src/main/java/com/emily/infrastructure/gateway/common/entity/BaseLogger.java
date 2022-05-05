@@ -1,7 +1,6 @@
 package com.emily.infrastructure.gateway.common.entity;
 
-import com.emily.infrastructure.gateway.common.HttpUtils;
-import com.emily.infrastructure.gateway.common.enums.TraceType;
+import com.emily.infrastructure.gateway.common.ServerRequestUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
@@ -10,6 +9,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
+ * @author Emily
  * @program: EmilyGateway
  * @description: 日志实体类
  * @create: 2021/01/15
@@ -20,37 +20,17 @@ public class BaseLogger implements Serializable {
      */
     private String traceId = UUID.randomUUID().toString();
     /**
-     * 日志类型
-     */
-    private TraceType traceType = TraceType.INFO;
-    /**
-     * 当前请求的基础连接ID，与网关有关
-     */
-    private String cId;
-    /**
      * 请求方法
      */
     private String method;
-    /**
-     * 请求类型
-     */
-    private String contentType;
-    /**
-     * 协议
-     */
-    private String schema;
     /**
      * 请求URL
      */
     private String url;
     /**
-     * 请求header
-     */
-    private HttpHeaders headers;
-    /**
      * 请求参数
      */
-    private Object requestBody;
+    private Object requestParams;
     /**
      * 响应数据
      */
@@ -65,12 +45,9 @@ public class BaseLogger implements Serializable {
 
     public BaseLogger(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
-        this.setcId(request.getId());
-        this.setMethod(HttpUtils.getMethod(request));
-        this.setRequestBody(HttpUtils.getRequestBody(exchange));
-        this.setContentType(HttpUtils.getContentType(request));
-        this.setSchema(HttpUtils.getSchema(request));
-        this.setHeaders(request.getHeaders());
+        this.method = ServerRequestUtils.getMethod(request);
+        this.requestParams = ServerRequestUtils.getRequestParams(exchange);
+        this.url = ServerRequestUtils.getUrl(exchange);
     }
 
     public String getTraceId() {
@@ -79,14 +56,6 @@ public class BaseLogger implements Serializable {
 
     public void setTraceId(String traceId) {
         this.traceId = traceId;
-    }
-
-    public String getcId() {
-        return cId;
-    }
-
-    public void setcId(String cId) {
-        this.cId = cId;
     }
 
     public String getMethod() {
@@ -105,12 +74,12 @@ public class BaseLogger implements Serializable {
         this.url = url;
     }
 
-    public Object getRequestBody() {
-        return requestBody;
+    public Object getRequestParams() {
+        return requestParams;
     }
 
-    public void setRequestBody(Object requestBody) {
-        this.requestBody = requestBody;
+    public void setRequestParams(Object requestParams) {
+        this.requestParams = requestParams;
     }
 
     public Object getResponseBody() {
@@ -127,37 +96,5 @@ public class BaseLogger implements Serializable {
 
     public void setTime(long time) {
         this.time = time;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public TraceType getTraceType() {
-        return traceType;
-    }
-
-    public void setTraceType(TraceType traceType) {
-        this.traceType = traceType;
-    }
-
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public HttpHeaders getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(HttpHeaders headers) {
-        this.headers = headers;
     }
 }
