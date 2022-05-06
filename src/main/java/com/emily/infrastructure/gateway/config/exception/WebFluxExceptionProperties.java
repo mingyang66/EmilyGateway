@@ -7,8 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @Author :  Emily
  * @CreateDate :  Created in 2022/4/26 3:29 下午
  */
-@ConfigurationProperties(prefix = GatewayWebExceptionProperties.PREFIX)
-public class GatewayWebExceptionProperties {
+@ConfigurationProperties(prefix = WebFluxExceptionProperties.PREFIX)
+public class WebFluxExceptionProperties {
     /**
      * 默认前缀
      */

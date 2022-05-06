@@ -73,17 +73,17 @@ public class RecordLoggerGatewayFilterFactory extends AbstractGatewayFilterFacto
                  * 1.就是如下自定义修饰类的方式获取响应结果
                  * 2.通过重写 {@link ModifyResponseBodyGatewayFilterFactory.ModifiedServerHttpResponse}修饰类的方式来实现
                  */
-                return chain.filter(exchange.mutate().response(new RecordLoggerResponseDecorator(exchange)).build());
+                return chain.filter(exchange.mutate().response(new RecordLoggerResponseDecorator(exchange)).build())
                         //如果Mono在没有数据的情况下完成，则要调用的回调参数为null
-                        /*.doOnSuccess((args) -> {
+                        .doOnSuccess((args) -> {
                             BaseLogger baseLogger = exchange.getAttribute(BASE_LOGGER);
                             // 设置响应时间
                             baseLogger.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(START_TIME, 0L));
                             // 记录日志信息
                             logger.info(JSONUtils.toJSONString(baseLogger));
-                        })*/
+                        })
                         // 当Mono完成并出现错误时触发，将会发送onError信号
-                      /*  .doOnError(throwable -> {
+                        .doOnError(throwable -> {
                             BaseLogger baseLogger = exchange.getAttribute(BASE_LOGGER);
                             // 设置响应时间
                             baseLogger.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(START_TIME, 0L));
@@ -91,7 +91,7 @@ public class RecordLoggerGatewayFilterFactory extends AbstractGatewayFilterFacto
                             baseLogger.setResponseBody(throwable.getMessage());
                             // 记录日志信息
                             logger.error(JSONUtils.toJSONString(baseLogger));
-                        });*/
+                        });
             }
 
             @Override
