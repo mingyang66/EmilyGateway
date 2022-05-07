@@ -4,7 +4,7 @@
 
 #### 项目依赖版本
 
-- JDK1.8
+- JDK11
 - springboot2.6.7
 - 基础库组件4.0.10
 - springcloud3.1.0
