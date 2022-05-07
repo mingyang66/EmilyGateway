@@ -39,5 +39,4 @@ logs/
 out/
 .DS_Store
 venv/
-/src/main/resources/application-redis.properties
-/src/main/resources/application-gateway.yml
+/src/main/resources/application-gateway_rabbitmq.yml

@@ -1,0 +1,107 @@
+server:
+  port: 443
+  # 优雅停机
+  shutdown: graceful
+  ssl:
+    # 是否启用SSL支持
+    enabled: true
+    # 标识秘钥存储中秘钥的别名
+    key-alias: emily
+    # 指定保存SSL证书的秘钥存储的路径（通常是jks文件）
+    key-store: classpath:emily.p12
+    # 访问秘钥存储的密码
+    key-store-password: 123456
+    # 秘钥存储的类型
+    key-store-type: PKCS12
+    # 要使用的SSL协议
+    protocol: TLS
+  http:
+    # 是否开启http端口号
+    enabled: true
+    # http端口号
+    port: 80
+    # http请求是否自动跳转到https，默认：true
+    http-to-https: true
+    # 优雅停机
+    shutdown: graceful
+  netty:
+    # 网络通道(channel)连接超时时间
+    connection-timeout: PT10S
+    # h2c(即：http/2协议的明文版本)升级请求的最大内容长度，默认：0B
+    h2c-max-content-length: 0B
+    # http请求解码的初始缓冲区大小，默认：128B
+    initial-buffer-size: 128B
+    # HTTP请求可解码的最大块大小，默认：8KB
+    max-chunk-size: 8KB
+    # http请求的初始行可以解码的最大长度
+    max-initial-line-length: 4KB
+    # 解码请求时是否验证标头，默认：true
+    validate-headers: true
+management:
+  endpoint:
+    gateway:
+      # 开启网关端点监控，默认：true
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        # 是否打开网关端点健康
+        include: gateway,health
+  server:
+    #健康检查端口号
+    port: 7443
+    ssl:
+      # 是否开启SSL支持，默认：true
+      enabled: true
+      # 标识秘钥存储中秘钥的别名
+      key-alias: emily
+      # 指定保存SSL证书的秘钥存储的路径（通常是jks文件）
+      key-store: classpath:emily.p12
+      #访问秘钥存储的密码
+      key-store-password: 123456
+      # 秘钥存储的类型
+      key-store-type: PKCS12
+      # 要使用的SSL协议
+      protocol: TLS
+spring:
+  cloud:
+    gateway:
+      httpclient:
+        # 连接超时，单位毫秒，默认：45s
+        connect-timeout: 45000
+        # 响应超时时间，{@link java.time.Duration}类型
+        response-timeout: PT1S
+        # 最大响应头大小，默认:8192，单位：字节B
+        max-header-size: 8192
+        # 最大初始行大小，单位：字节B
+        max-initial-line-length: 4096
+        pool:
+          # channel pool映射名称，默认：proxy
+          name: proxy
+          # HttpClient要使用的池的类型，默认：elastic
+          type: elastic
+          # 空闲请求在空闲多久后会被回收，默认：毫秒  -Dreactor.netty.pool.leasingStrategy=lifo
+          max-idle-time: PT1S
+        ssl:
+          # 信任下游的所有证书TLS, 默认：false
+          use-insecure-trust-manager: true
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            # 是否允许携带认证信息，默认：false
+            allowCredentials: false
+            # 允许跨域的源（网站域名|IP）,设置*为全部
+            allowedOrigins: "*"
+              #- "https://127.0.0.1"
+            #- https://localhost
+            #- http://61.152.230.66:80
+            # 允许跨域的源正则表达式匹配
+            #allowedOriginPatterns: "*"
+            # 允许跨域的method,设置*为全部
+            allowedMethods: GET,POST,PUT,OPTIONS
+            # 允许跨域秦秋的Header字段，设置*为全部
+            allowedHeaders: "*"
+            # 发生跨域问题时展示的响应header信息，默认：null，设置*为所有
+            #exposedHeaders: "*"
+            # 配置客户端预检请求响应缓存时间，单位：秒（默认：1800）
+            maxAge: 1800

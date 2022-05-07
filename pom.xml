@@ -23,6 +23,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <!--Springcloud版本-->
         <spring.cloud.version>3.1.0</spring.cloud.version>
+        <!--Springcloud版本-->
+        <spring.gateway.version>3.1.2</spring.gateway.version>
         <!--底层库版本-->
         <emily.infrastructure.version>4.0.10</emily.infrastructure.version>
     </properties>
@@ -31,6 +33,11 @@
         <dependency>
             <groupId>com.emily.infrastructure</groupId>
             <artifactId>emily-spring-boot-common</artifactId>
+            <version>${emily.infrastructure.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.emily.infrastructure</groupId>
+            <artifactId>emily-spring-boot-logback</artifactId>
             <version>${emily.infrastructure.version}</version>
         </dependency>
         <dependency>
@@ -54,7 +61,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
-            <version>${spring.cloud.version}</version>
+            <version>${spring.gateway.version}</version>
         </dependency>
         <!--consul-服务发现-->
         <dependency>

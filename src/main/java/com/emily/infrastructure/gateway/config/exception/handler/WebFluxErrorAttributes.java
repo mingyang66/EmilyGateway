@@ -18,19 +18,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * @Description:
- * @PackageName: com.eastmoney.emis.gateway.exception
- * @Author: 陈世超
- * @Create: 2020-11-26 13:47
- * @Version: 1.0
+ *
+ * @author Emily
  */
-@SuppressWarnings("deprecation")
 public class WebFluxErrorAttributes extends DefaultErrorAttributes {
     private final Boolean includeException;
-
-    public WebFluxErrorAttributes() {
-        this.includeException = null;
-    }
 
     public WebFluxErrorAttributes(boolean includeException) {
         this.includeException = includeException;
