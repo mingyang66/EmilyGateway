@@ -9,8 +9,8 @@ import org.springframework.boot.web.server.Shutdown;
  * @description: Netty服务器配置
  * @create: 2021/01/13
  */
-@ConfigurationProperties(prefix = ServerProperties.PREFIX)
-public class ServerProperties {
+@ConfigurationProperties(prefix = NettyWebServerProperties.PREFIX)
+public class NettyWebServerProperties {
     /**
      * 默认前缀
      */

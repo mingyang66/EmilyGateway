@@ -24,22 +24,25 @@ import java.util.Objects;
  * @create: 2021/01/13
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(ServerProperties.class)
-@ConditionalOnProperty(prefix = ServerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties(NettyWebServerProperties.class)
+@ConditionalOnProperty(prefix = NettyWebServerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class NettyWebServerAutoConfiguration {
-    @Autowired
-    private HttpHandler httpHandler;
-    @Autowired
-    private ServerProperties serverProperties;
 
+    private HttpHandler httpHandler;
+    private NettyWebServerProperties nettyWebServerProperties;
     private WebServer webServer;
+
+    public NettyWebServerAutoConfiguration(HttpHandler httpHandler, NettyWebServerProperties nettyWebServerProperties) {
+        this.httpHandler = httpHandler;
+        this.nettyWebServerProperties = nettyWebServerProperties;
+    }
 
     @PostConstruct
     public void start() {
-        NettyReactiveWebServerFactory factory = new NettyReactiveWebServerFactory(serverProperties.getPort());
+        NettyReactiveWebServerFactory factory = new NettyReactiveWebServerFactory(nettyWebServerProperties.getPort());
         //设置关机模式
-        factory.setShutdown(serverProperties.getShutdown());
-        if (serverProperties.isHttpToHttps()) {
+        factory.setShutdown(nettyWebServerProperties.getShutdown());
+        if (nettyWebServerProperties.isHttpToHttps()) {
             webServer = factory.getWebServer(((request, response) -> {
                 URI uri = request.getURI();
                 try {
