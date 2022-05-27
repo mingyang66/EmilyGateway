@@ -21,7 +21,7 @@ server:
     # http端口号
     port: 80
     # http请求是否自动跳转到https，默认：true
-    http-to-https: true
+    http-to-https: false
     # 优雅停机
     shutdown: graceful
   netty:
@@ -85,6 +85,13 @@ spring:
         ssl:
           # 信任下游的所有证书TLS, 默认：false
           use-insecure-trust-manager: true
+        # 为Netty HttpClient启用监听调试，默认：false
+        wiretap: true
+        # 为Netty HttpClient开启监听debugging模式，默认：false
+        compression: false
+      httpserver:
+        # 为Netty HttpServer开启监听debugging模式，默认：false
+        wiretap: true
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -98,10 +105,16 @@ spring:
             # 允许跨域的源正则表达式匹配
             #allowedOriginPatterns: "*"
             # 允许跨域的method,设置*为全部
-            allowedMethods: GET,POST,PUT,OPTIONS
+            allowedMethods: "*"
             # 允许跨域秦秋的Header字段，设置*为全部
             allowedHeaders: "*"
             # 发生跨域问题时展示的响应header信息，默认：null，设置*为所有
             #exposedHeaders: "*"
             # 配置客户端预检请求响应缓存时间，单位：秒（默认：1800）
             maxAge: 1800
+        # 支持HTTP预检请求OPTIONS CORS请求，默认：false
+        add-to-simple-url-handler-mapping: false
+---
+logging:
+  level:
+    reactor.netty: debug

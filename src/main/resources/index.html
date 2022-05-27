@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+
+<body>
+afds
+</body>
+<script>
+    $.ajax({
+        url:"http://127.0.0.1/emily/api/test/test2",//发送的路径
+        type:"POST",//发送的方式
+        async:false,
+        data:JSON.stringify({'name':'test','age':23}),//发送的数据
+        contentType: "application/json", //提交数据类型
+        dataType:"json",//服务器返回的数据类型
+        success: function(data) {
+            console.log(data)
+        },
+        error: function (data){
+            alert("提交失败");
+        }
+    });
+</script>
+<script type="text/javascript">
+    fetch('http://127.0.0.1/emily/api/test/test2',{
+        method:'POST',
+        headers: {
+            'X-Test-CORS':'shelf-cors'
+        }
+    })
+</script>
+</html>

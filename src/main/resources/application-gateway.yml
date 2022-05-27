@@ -1,6 +1,12 @@
 spring:
   cloud:
     gateway:
+      # 默认全局过滤器
+      default-filters:
+        # 消除重复响应头
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        # 传递原始Host，而不是根据Http Client来确定
+        - PreserveHostHeader
       routes:
         # 自定义路由ID,保持唯一(基于consul的网关配置)
         - id: emily
