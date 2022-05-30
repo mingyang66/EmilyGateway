@@ -115,6 +115,6 @@ spring:
         # 支持HTTP预检请求OPTIONS CORS请求，默认：false
         add-to-simple-url-handler-mapping: false
 ---
-logging:
-  level:
-    reactor.netty: debug
+#logging:
+  #level:
+    #reactor.netty: debug
