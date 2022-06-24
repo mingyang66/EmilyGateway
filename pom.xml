@@ -22,17 +22,17 @@
         <!--需要生成的目标class文件的编译版本-->
         <maven.compiler.target>11</maven.compiler.target>
         <!--Springcloud版本-->
-        <spring.cloud.version>3.1.2</spring.cloud.version>
+        <spring.cloud.version>3.1.3</spring.cloud.version>
         <!--consul-->
-        <spring.consul.version>3.1.0</spring.consul.version>
+        <spring.consul.version>3.1.1</spring.consul.version>
         <!--Springcloud版本-->
-        <spring.gateway.version>3.1.2</spring.gateway.version>
+        <spring.gateway.version>3.1.3</spring.gateway.version>
         <!--断路器-->
-        <spring.resilience4j.version>2.1.2</spring.resilience4j.version>
+        <spring.resilience4j.version>2.1.3</spring.resilience4j.version>
         <!--底层库版本-->
         <emily.infrastructure.version>4.0.10</emily.infrastructure.version>
         <!--缓存配置-->
-        <github.caffeine.version>3.1.0</github.caffeine.version>
+        <github.caffeine.version>3.1.1</github.caffeine.version>
     </properties>
 
     <dependencies>

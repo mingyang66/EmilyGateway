@@ -1,3 +1,5 @@
 spring:
   profiles:
     active: server,gateway
+logging:
+  config: file:/Users/yaomingyang/Documents/IDE/workplace-java/EmilyGateway/config/logback.xml
