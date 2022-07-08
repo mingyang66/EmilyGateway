@@ -3,6 +3,10 @@ spring:
     gateway:
       # 默认全局过滤器
       default-filters:
+        - name: DedupeResponseHeader
+          args:
+            name: Access-Control-Allow-Credentials Access-Control-Allow-Origin Vary
+            strategy: RETAIN_LAST
         # 消除重复响应头
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
         # 传递原始Host，而不是根据Http Client来确定
