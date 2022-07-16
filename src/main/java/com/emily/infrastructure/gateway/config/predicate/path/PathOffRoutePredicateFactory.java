@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 /**
  * @Description :  路由关闭断言
- * @Author :  姚明洋
+ * @Author :  Emily
  * @CreateDate :  Created in 2022/7/7 10:30 上午
  */
 public class PathOffRoutePredicateFactory extends AbstractRoutePredicateFactory<PathOffRoutePredicateFactory.Config> {

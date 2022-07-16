@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @Description :  断言工厂配置类
- * @Author :  姚明洋
+ * @Author :  Emily
  * @CreateDate :  Created in 2022/7/7 10:38 上午
  */
 @Configuration
