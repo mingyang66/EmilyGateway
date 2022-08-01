@@ -1,4 +1,4 @@
-package com.emily.infrastructure.gateway.config.logger.filter;
+package com.emily.infrastructure.gateway.config.filter.logger;
 
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.gateway.common.entity.BaseLogger;

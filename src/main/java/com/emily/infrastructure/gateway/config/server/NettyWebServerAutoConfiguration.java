@@ -1,7 +1,6 @@
 package com.emily.infrastructure.gateway.config.server;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
@@ -25,7 +24,7 @@ import java.util.Objects;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(NettyWebServerProperties.class)
-@ConditionalOnProperty(prefix = NettyWebServerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = NettyWebServerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = false)
 public class NettyWebServerAutoConfiguration {
 
     private HttpHandler httpHandler;

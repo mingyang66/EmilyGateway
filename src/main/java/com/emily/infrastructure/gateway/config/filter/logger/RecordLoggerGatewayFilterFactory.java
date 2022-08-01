@@ -1,7 +1,8 @@
-package com.emily.infrastructure.gateway.config.logger.filter;
+package com.emily.infrastructure.gateway.config.filter.logger;
 
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.gateway.common.entity.BaseLogger;
+import com.emily.infrastructure.gateway.config.filter.order.GatewayFilterOrdered;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.event.EnableBodyCachingEvent;
@@ -11,6 +12,7 @@ import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyResponseBodyGatewayFilterFactory;
 import org.springframework.cloud.gateway.route.Route;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -27,7 +29,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * @description: 网关全局过滤器，拦截请求响应日志
  * @create: 2020/12/22
  */
-public class RecordLoggerGatewayFilterFactory extends AbstractGatewayFilterFactory<RecordLoggerGatewayFilterFactory.Config> {
+public class RecordLoggerGatewayFilterFactory extends AbstractGatewayFilterFactory<RecordLoggerGatewayFilterFactory.Config>{
 
     private static final Logger logger = LoggerFactory.getLogger(RecordLoggerGatewayFilterFactory.class);
 
@@ -103,6 +105,7 @@ public class RecordLoggerGatewayFilterFactory extends AbstractGatewayFilterFacto
     }
 
 
+    @Validated
     public static class Config {
         /**
          * 是否开启日志记录，默认：true

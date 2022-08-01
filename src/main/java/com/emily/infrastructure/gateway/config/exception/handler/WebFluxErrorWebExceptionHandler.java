@@ -1,7 +1,7 @@
 package com.emily.infrastructure.gateway.config.exception.handler;
 
+import com.emily.infrastructure.gateway.common.RecordLogger;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
@@ -63,6 +63,7 @@ public class WebFluxErrorWebExceptionHandler extends DefaultErrorWebExceptionHan
         Map<String, Object> responseMap = Maps.newLinkedHashMap();
         responseMap.put("status", attributes.get("status"));
         responseMap.put("message", Objects.nonNull(attributes.get("error")) ? attributes.get("error") : attributes.get("message"));
+        RecordLogger.recordUser(request, attributes, String.valueOf(responseMap.get("status")), String.valueOf(responseMap.get("message")));
         return responseMap;
     }
 }

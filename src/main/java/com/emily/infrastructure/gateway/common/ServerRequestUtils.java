@@ -1,7 +1,6 @@
 package com.emily.infrastructure.gateway.common;
 
 import com.emily.infrastructure.common.enums.AppHttpStatus;
-import com.emily.infrastructure.common.exception.BusinessException;
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.google.common.collect.Maps;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -12,9 +11,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_REQUEST_BODY_ATTR;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
@@ -30,7 +27,7 @@ public class ServerRequestUtils {
      * 获取网关请求IP
      */
     public static String getIp(ServerHttpRequest request) {
-        Assert.notNull(request, AppHttpStatus.ILLEGAL_PARAMETER.getMessage());
+        Assert.notNull(request, AppHttpStatus.ILLEGAL_ARGUMENT.getMessage());
         return request.getRemoteAddress().getHostString();
     }
 
@@ -38,7 +35,7 @@ public class ServerRequestUtils {
      * 获取请求路径
      */
     public static String getUrl(ServerWebExchange exchange) {
-        Assert.notNull(exchange, AppHttpStatus.ILLEGAL_PARAMETER.getMessage());
+        Assert.notNull(exchange, AppHttpStatus.ILLEGAL_ARGUMENT.getMessage());
         return exchange.getAttributes().containsKey(GATEWAY_REQUEST_URL_ATTR) ? exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR).toString() : exchange.getRequest().getURI().toString();
     }
 
@@ -46,7 +43,7 @@ public class ServerRequestUtils {
      * 网关请求协议
      */
     public static String getSchema(ServerHttpRequest request) {
-        Assert.notNull(request, AppHttpStatus.ILLEGAL_PARAMETER.getMessage());
+        Assert.notNull(request, AppHttpStatus.ILLEGAL_ARGUMENT.getMessage());
         return request.getURI().getScheme();
     }
 
@@ -54,7 +51,7 @@ public class ServerRequestUtils {
      * 获取请求Method
      */
     public static String getMethod(ServerHttpRequest request) {
-        Assert.notNull(request, AppHttpStatus.ILLEGAL_PARAMETER.getMessage());
+        Assert.notNull(request, AppHttpStatus.ILLEGAL_ARGUMENT.getMessage());
         return request.getMethodValue();
     }
 
@@ -65,7 +62,7 @@ public class ServerRequestUtils {
      * @return
      */
     public static String getContentType(ServerHttpRequest request) {
-        Assert.notNull(request, AppHttpStatus.ILLEGAL_PARAMETER.getMessage());
+        Assert.notNull(request, AppHttpStatus.ILLEGAL_ARGUMENT.getMessage());
         return request.getHeaders().getContentType() == null ? null : MediaType.toString(Arrays.asList(request.getHeaders().getContentType()));
     }
 
@@ -73,7 +70,7 @@ public class ServerRequestUtils {
      * 获取请求参数
      */
     public static Object getRequestParams(ServerWebExchange exchange) {
-        Assert.notNull(exchange, AppHttpStatus.ILLEGAL_PARAMETER.getMessage());
+        Assert.notNull(exchange, AppHttpStatus.ILLEGAL_ARGUMENT.getMessage());
         Map<String, Object> paramsMap = Maps.newHashMap();
         paramsMap.put("headers", exchange.getRequest().getHeaders());
         DataBuffer dataBuffer = exchange.getAttribute(CACHED_REQUEST_BODY_ATTR);

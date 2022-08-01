@@ -1,6 +1,9 @@
 package com.emily.infrastructure.gateway.config.filter.dedupe;
 
+import com.emily.infrastructure.common.constant.CharacterInfo;
 import com.emily.infrastructure.gateway.common.utils.FilterUtils;
+import com.emily.infrastructure.gateway.config.filter.order.GatewayFilterOrdered;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -24,7 +27,7 @@ import java.util.List;
  */
 public class DedupeLoginGatewayFilterFactory extends AbstractGatewayFilterFactory<DedupeLoginGatewayFilterFactory.Config> {
 
-    private static final String DEDUPE = "dedupe";
+    private static final String WHITE_LIST = "whiteList";
 
     public DedupeLoginGatewayFilterFactory() {
         super(Config.class);
@@ -32,7 +35,7 @@ public class DedupeLoginGatewayFilterFactory extends AbstractGatewayFilterFactor
 
     @Override
     public List<String> shortcutFieldOrder() {
-        return Arrays.asList(DEDUPE);
+        return Arrays.asList(WHITE_LIST);
     }
 
 
@@ -41,16 +44,17 @@ public class DedupeLoginGatewayFilterFactory extends AbstractGatewayFilterFactor
         return new GatewayFilterOrdered() {
             @Override
             public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-                if (config.isDedupe()) {
-                    ServerHttpResponse response = exchange.getResponse();
-                    //返回结果
-                    DataBuffer dataBuffer = FilterUtils.getResponseData(exchange);
-                    //指定编码，否则在浏览器中会中文乱码
-                    response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                    response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-                    return response.writeWith(Mono.just(dataBuffer));
+                String[] paths = StringUtils.split(exchange.getRequest().getURI().getRawPath(), CharacterInfo.PATH_SEPARATOR);
+                if (config.getWhiteList().contains(paths[0])) {
+                    return chain.filter(exchange);
                 }
-                return chain.filter(exchange);
+                ServerHttpResponse response = exchange.getResponse();
+                //返回结果
+                DataBuffer dataBuffer = FilterUtils.getResponseData(exchange);
+                //指定编码，否则在浏览器中会中文乱码
+                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+                return response.writeWith(Mono.just(dataBuffer));
             }
 
             @Override
@@ -63,14 +67,14 @@ public class DedupeLoginGatewayFilterFactory extends AbstractGatewayFilterFactor
     @Validated
     public static class Config {
 
-        private boolean dedupe;
+        private List<String> whiteList;
 
-        public boolean isDedupe() {
-            return dedupe;
+        public List<String> getWhiteList() {
+            return whiteList;
         }
 
-        public void setDedupe(boolean dedupe) {
-            this.dedupe = dedupe;
+        public void setWhiteList(List<String> whiteList) {
+            this.whiteList = whiteList;
         }
     }
 

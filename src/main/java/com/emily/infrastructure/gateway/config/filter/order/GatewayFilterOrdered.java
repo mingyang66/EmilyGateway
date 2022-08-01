@@ -1,4 +1,4 @@
-package com.emily.infrastructure.gateway.config.filter.dedupe;
+package com.emily.infrastructure.gateway.config.filter.order;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.core.Ordered;

@@ -4,7 +4,6 @@ import com.emily.infrastructure.common.enums.AppHttpStatus;
 import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.google.common.collect.Maps;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -17,8 +16,6 @@ import java.util.Map;
  */
 public class FilterUtils {
 
-    private static final String LANGUAGE = "language";
-
     /**
      * 获取异常返回数据
      *
@@ -28,8 +25,8 @@ public class FilterUtils {
     public static DataBuffer getResponseData(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
         Map<String, Object> dataMap = Maps.newLinkedHashMap();
-        dataMap.put("status", AppHttpStatus.AUTH_EXPIRE.getStatus());
-        dataMap.put("message", AppHttpStatus.AUTH_EXPIRE.getMessage());
+        dataMap.put("status", AppHttpStatus.ILLEGAL_ACCESS.getStatus());
+        dataMap.put("message", AppHttpStatus.ILLEGAL_ACCESS.getMessage());
         return response.bufferFactory().wrap(JSONUtils.toByteArray(dataMap));
     }
 }

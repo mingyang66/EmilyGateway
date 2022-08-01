@@ -1,7 +1,6 @@
 package com.emily.infrastructure.gateway.common.entity;
 
 import com.emily.infrastructure.gateway.common.ServerRequestUtils;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
