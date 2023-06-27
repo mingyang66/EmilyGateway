@@ -26,14 +26,36 @@
         <!--断路器-->
         <spring.resilience4j.version>2.1.3</spring.resilience4j.version>
         <!--底层库版本-->
-        <emily.infrastructure.version>4.1.2</emily.infrastructure.version>
+        <emily.infrastructure.version>4.3.4</emily.infrastructure.version>
     </properties>
 
     <dependencies>
-        <dependency>
+<!--        <dependency>
             <groupId>com.emily.infrastructure</groupId>
             <artifactId>emily-spring-boot-common</artifactId>
             <version>${emily.infrastructure.version}</version>
+        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/io.github.mingyang66/oceansky-common -->
+        <dependency>
+            <groupId>io.github.mingyang66</groupId>
+            <artifactId>oceansky-common</artifactId>
+            <version>${emily.infrastructure.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.mingyang66</groupId>
+            <artifactId>oceansky-json</artifactId>
+            <version>${emily.infrastructure.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.0.1-jre</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

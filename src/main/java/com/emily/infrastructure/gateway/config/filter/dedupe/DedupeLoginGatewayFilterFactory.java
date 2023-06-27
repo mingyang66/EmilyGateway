@@ -1,6 +1,5 @@
 package com.emily.infrastructure.gateway.config.filter.dedupe;
 
-import com.emily.infrastructure.common.constant.CharacterInfo;
 import com.emily.infrastructure.gateway.common.utils.FilterUtils;
 import com.emily.infrastructure.gateway.config.filter.order.GatewayFilterOrdered;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +43,7 @@ public class DedupeLoginGatewayFilterFactory extends AbstractGatewayFilterFactor
         return new GatewayFilterOrdered() {
             @Override
             public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-                String[] paths = StringUtils.split(exchange.getRequest().getURI().getRawPath(), CharacterInfo.PATH_SEPARATOR);
+                String[] paths = StringUtils.split(exchange.getRequest().getURI().getRawPath(), "/");
                 if (config.getWhiteList().contains(paths[0])) {
                     return chain.filter(exchange);
                 }

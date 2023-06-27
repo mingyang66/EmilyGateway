@@ -1,7 +1,7 @@
 package com.emily.infrastructure.gateway.common.utils;
 
-import com.emily.infrastructure.common.enums.AppHttpStatus;
-import com.emily.infrastructure.common.utils.json.JSONUtils;
+import com.emily.infrastructure.gateway.common.enums.HttpStatusType;
+import com.emily.infrastructure.json.JsonUtils;
 import com.google.common.collect.Maps;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -25,8 +25,8 @@ public class FilterUtils {
     public static DataBuffer getResponseData(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
         Map<String, Object> dataMap = Maps.newLinkedHashMap();
-        dataMap.put("status", AppHttpStatus.ILLEGAL_ACCESS.getStatus());
-        dataMap.put("message", AppHttpStatus.ILLEGAL_ACCESS.getMessage());
-        return response.bufferFactory().wrap(JSONUtils.toByteArray(dataMap));
+        dataMap.put("status", HttpStatusType.ILLEGAL_ACCESS.getStatus());
+        dataMap.put("message", HttpStatusType.ILLEGAL_ACCESS.getMessage());
+        return response.bufferFactory().wrap(JsonUtils.toByteArray(dataMap));
     }
 }

@@ -1,7 +1,7 @@
 package com.emily.infrastructure.gateway.config.filter.logger;
 
-import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.gateway.common.entity.BaseLogger;
+import com.emily.infrastructure.json.JsonUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.reactivestreams.Publisher;
@@ -71,10 +71,10 @@ public class RecordLoggerResponseDecorator extends ServerHttpResponseDecorator {
         }
         if (mediaType.includes(MediaType.APPLICATION_JSON) || mediaType.includes(MediaType.APPLICATION_JSON_UTF8)) {
             try {
-                return JSONUtils.toJavaBean(body, Map.class);
+                return JsonUtils.toJavaBean(body, Map.class);
             } catch (Exception e) {
                 try {
-                    return JSONUtils.toJavaBean(body, new TypeReference<List<Map<Object, Object>>>() {
+                    return JsonUtils.toJavaBean(body, new TypeReference<List<Map<Object, Object>>>() {
                     });
                 } catch (Exception exception) {
                 }

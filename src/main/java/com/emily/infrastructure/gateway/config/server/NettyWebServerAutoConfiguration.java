@@ -1,6 +1,6 @@
 package com.emily.infrastructure.gateway.config.server;
 
-import org.apache.commons.lang3.StringUtils;
+import com.emily.infrastructure.common.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;

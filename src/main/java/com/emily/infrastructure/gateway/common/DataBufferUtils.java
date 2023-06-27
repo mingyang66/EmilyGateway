@@ -1,8 +1,8 @@
 package com.emily.infrastructure.gateway.common;
 
+import com.emily.infrastructure.common.StringUtils;
 import io.netty.buffer.ByteBufAllocator;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import reactor.core.publisher.Flux;

@@ -1,8 +1,8 @@
 package com.emily.infrastructure.gateway.config.filter.logger;
 
-import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.gateway.common.entity.BaseLogger;
 import com.emily.infrastructure.gateway.config.filter.order.GatewayFilterOrdered;
+import com.emily.infrastructure.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.event.EnableBodyCachingEvent;
@@ -82,7 +82,7 @@ public class RecordLoggerGatewayFilterFactory extends AbstractGatewayFilterFacto
                             // 设置响应时间
                             baseLogger.setTime(System.currentTimeMillis() - exchange.getAttributeOrDefault(START_TIME, 0L));
                             // 记录日志信息
-                            logger.info(JSONUtils.toJSONString(baseLogger));
+                            logger.info(JsonUtils.toJSONString(baseLogger));
                         })
                         // 当Mono完成并出现错误时触发，将会发送onError信号
                         .doOnError(throwable -> {
@@ -92,7 +92,7 @@ public class RecordLoggerGatewayFilterFactory extends AbstractGatewayFilterFacto
                             // 设置返回的错误信息
                             baseLogger.setResponseBody(throwable.getMessage());
                             // 记录日志信息
-                            logger.error(JSONUtils.toJSONString(baseLogger));
+                            logger.error(JsonUtils.toJSONString(baseLogger));
                         });
             }
 

@@ -1,7 +1,7 @@
 package com.emily.infrastructure.gateway.common;
 
-import com.emily.infrastructure.common.utils.json.JSONUtils;
 import com.emily.infrastructure.gateway.common.entity.BaseLogger;
+import com.emily.infrastructure.json.JsonUtils;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,6 @@ public class RecordLogger {
         Map<String, Object> inParams = Maps.newHashMap();
         inParams.put("headers", request.headers().asHttpHeaders());
         userAction.setRequestParams(inParams);
-        logger.info(JSONUtils.toJSONString(userAction));
+        logger.info(JsonUtils.toJSONString(userAction));
     }
 }
